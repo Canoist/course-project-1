@@ -3,7 +3,7 @@ import { useState } from "react/cjs/react.development";
 import api from "../api";
 import Table from "./table";
 
-const UsersList = () => {
+const App = () => {
   const [users, setUsers] = useState(api.users.fetchAll());
   const people = useCallback(
     (number) => {
@@ -47,4 +47,4 @@ const UsersList = () => {
     </div>
   );
 };
-export default UsersList;
+export default App;
