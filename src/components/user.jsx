@@ -3,7 +3,6 @@ import Bookmark from "./userComponents/bookmark";
 import Qualites from "./userComponents/qualities";
 
 function User({ user, onDelete, toggleBookmark }) {
-  // console.log("user---", user);
   return (
     <tr>
       <td>{user.name}</td>
