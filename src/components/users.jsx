@@ -11,7 +11,7 @@ function Users({ users, onDelete, toggleBookmark }) {
     console.log("page ", pageIndex);
     setCurrentPage(pageIndex);
   };
-  const userCrop = paginate(users, currentPage, pageSize)
+  const userCrop = paginate(users, currentPage, pageSize);
   return (
     <>
       <table className="table  table-striped">

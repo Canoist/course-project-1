@@ -5,7 +5,8 @@ function Bookmark({ status, toggleBookmark, id }) {
     <button
       onClick={() => {
         toggleBookmark(status, id);
-      }}>
+      }}
+    >
       {status ? (
         <i className="bi bi-bookmark-star-fill"></i>
       ) : (

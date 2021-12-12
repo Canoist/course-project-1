@@ -3,18 +3,18 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: ["plugin:react/recommended", "standard"],
+  extends: ["plugin:react/recommended", "standard", "prettier"],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
     },
-    ecmaVersion: 13,
+    ecmaVersion: 12,
     sourceType: "module",
   },
   plugins: ["react"],
   rules: {
     semi: [2, "always"],
-    "space-before-function-paren": ["error", "always"],
+    "space-before-function-paren": ["error", "never"],
     quotes: ["error", "double", { allowTemplateLiterals: true }],
   },
 };
