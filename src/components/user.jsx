@@ -1,9 +1,9 @@
 import React from "react";
 import Bookmark from "./userComponents/bookmark";
 import Qualites from "./userComponents/qualities";
+import PropTypes from "prop-types";
 
 function User({ user, onDelete, toggleBookmark }) {
-  // console.log("user---", user);
   return (
     <tr>
       <td>{user.name}</td>
@@ -30,5 +30,11 @@ function User({ user, onDelete, toggleBookmark }) {
     </tr>
   );
 }
+
+User.propTypes = {
+  user: PropTypes.object,
+  onDelete: PropTypes.func,
+  toggleBookmark: PropTypes.func
+};
 
 export default User;

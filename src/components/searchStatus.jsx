@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 function SearchStatus({ users }) {
   const renderPhrase = (number) => {
@@ -11,7 +12,8 @@ function SearchStatus({ users }) {
   return (
     <h2>
       <span
-        className={"badge " + (users.length > 0 ? "bg-primary" : "bg-danger")}>
+        className={"badge " + (users.length > 0 ? "bg-primary" : "bg-danger")}
+      >
         {users.length > 0
           ? `${users.length + " " + renderPhrase(users.length)} с тобой сегодня`
           : "Никто с тобой не тусанет"}
@@ -19,5 +21,9 @@ function SearchStatus({ users }) {
     </h2>
   );
 }
+
+SearchStatus.propTypes = {
+  users: PropTypes.array
+};
 
 export default SearchStatus;
