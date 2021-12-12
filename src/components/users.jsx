@@ -45,6 +45,7 @@ function Users({ users, onDelete, toggleBookmark }) {
         pageSize={pageSize}
         onPageChange={handlePageChange}
         currentPage={currentPage}
+        userCrop={userCrop}
       />
     </>
   );
