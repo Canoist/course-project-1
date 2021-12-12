@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 function Qualities({ quality }) {
   return (
@@ -7,5 +8,9 @@ function Qualities({ quality }) {
     </span>
   );
 }
+
+Qualities.propTypes = {
+  quality: PropTypes.object
+};
 
 export default Qualities;

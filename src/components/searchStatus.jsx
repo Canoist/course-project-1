@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 function SearchStatus({ users }) {
   const renderPhrase = (number) => {
@@ -20,5 +21,9 @@ function SearchStatus({ users }) {
     </h2>
   );
 }
+
+SearchStatus.propTypes = {
+  users: PropTypes.array
+};
 
 export default SearchStatus;

@@ -1,4 +1,6 @@
+/* eslint-disable multiline-ternary */
 import React from "react";
+import PropTypes from "prop-types";
 
 function Bookmark({ status, toggleBookmark, id }) {
   return (
@@ -15,5 +17,11 @@ function Bookmark({ status, toggleBookmark, id }) {
     </button>
   );
 }
+
+Bookmark.propTypes = {
+  status: PropTypes.bool,
+  toggleBookmark: PropTypes.func,
+  id: PropTypes.number
+};
 
 export default Bookmark;
