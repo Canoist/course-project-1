@@ -3,6 +3,8 @@ import User from "./user";
 
 function Users({ users, onDelete, toggleBookmark }) {
   return (
+    <>
+      {users.length > 0 && (
     <table className="table  table-striped">
       <thead>
         <tr>
@@ -26,6 +28,8 @@ function Users({ users, onDelete, toggleBookmark }) {
         ))}
       </tbody>
     </table>
+      )}
+    </>
   );
 }
 
