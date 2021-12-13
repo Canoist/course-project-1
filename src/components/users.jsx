@@ -9,7 +9,6 @@ function Users({ users, onDelete, toggleBookmark }) {
   const pageSize = 4;
   const [currentPage, setCurrentPage] = useState(1);
   const handlePageChange = (pageIndex) => {
-    console.log("page ", pageIndex);
     setCurrentPage(pageIndex);
   };
   const userCrop = paginate(users, currentPage, pageSize);

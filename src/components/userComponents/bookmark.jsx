@@ -21,7 +21,7 @@ function Bookmark({ status, toggleBookmark, id }) {
 Bookmark.propTypes = {
   status: PropTypes.bool,
   toggleBookmark: PropTypes.func,
-  id: PropTypes.number
+  id: PropTypes.string
 };
 
 export default Bookmark;
