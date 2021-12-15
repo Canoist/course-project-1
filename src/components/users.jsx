@@ -1,20 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { paginate } from "../utils/paginate";
 import Pagination from "./pagination";
 import PropTypes from "prop-types";
 import User from "./user";
+import GroupList from "./groupList";
+import API from "../api";
 
 function Users({ users, onDelete, toggleBookmark }) {
   const count = users.length;
   const pageSize = 4;
+  const [professions, setProfessions] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const handlePageChange = (pageIndex) => {
-    console.log("page ", pageIndex);
     setCurrentPage(pageIndex);
   };
+  const handleProfessionSelect = () => {
+    console.log(professions);
+  };
+  useEffect(() => {
+    console.log("request");
+    API.professions.fetchAll().then((data) => {
+      setProfessions(data);
+    });
+  }, []);
   const userCrop = paginate(users, currentPage, pageSize);
   return (
     <>
+      {professions && (
+        <GroupList
+          items={professions}
+          onItemSelect={handleProfessionSelect}
+          valueProperty="_id"
+          contentProperty="name"
+        />
+      )}
+
       {users.length > 0 && (
         <table className="table  table-striped">
           <thead>
@@ -52,9 +72,9 @@ function Users({ users, onDelete, toggleBookmark }) {
 }
 
 Users.propTypes = {
-  users: PropTypes.array,
-  onDelete: PropTypes.func,
-  toggleBookmark: PropTypes.func
+  users: PropTypes.array.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  toggleBookmark: PropTypes.func.isRequired
 };
 
 export default Users;
