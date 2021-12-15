@@ -98,7 +98,7 @@ function Users({ users, onDelete, toggleBookmark }) {
 }
 
 Users.propTypes = {
-  users: PropTypes.array.isRequired,
+  users: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   onDelete: PropTypes.func.isRequired,
   toggleBookmark: PropTypes.func.isRequired
 };
