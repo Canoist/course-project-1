@@ -3,37 +3,46 @@ import { paginate } from "../utils/paginate";
 import Pagination from "./pagination";
 import PropTypes from "prop-types";
 import User from "./user";
+import SearchStatus from "./searchStatus";
 import GroupList from "./groupList";
 import API from "../api";
 
 function Users({ users, onDelete, toggleBookmark }) {
-  const count = users.length;
   const pageSize = 2;
   const [professions, setProfessions] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProf, setSelectedProf] = useState();
+
   const handlePageChange = (pageIndex) => {
     setCurrentPage(pageIndex);
   };
+
   const handleProfessionSelect = (item) => {
     setSelectedProf(item);
+    setCurrentPage(1);
   };
+
   const clearFilter = () => {
     setSelectedProf();
   };
+
   useEffect(() => {
     API.professions.fetchAll().then((data) => {
       setProfessions(data);
     });
   }, []);
+
   const filteredUsers = selectedProf
     ? users.filter((user) => user.profession === selectedProf)
     : users;
+
+  const count = filteredUsers.length;
   const userCrop = paginate(filteredUsers, currentPage, pageSize);
+
   return (
-    <>
+    <div className="d-flex">
       {professions && (
-        <>
+        <div className="d-flex flex-column flex-shrink-0 p-3">
           <GroupList
             items={professions}
             onItemSelect={handleProfessionSelect}
@@ -42,42 +51,46 @@ function Users({ users, onDelete, toggleBookmark }) {
           <button className="btn btn-secondary mt-2" onClick={clearFilter}>
             Очистить
           </button>
-        </>
+        </div>
       )}
-
-      {users.length > 0 && (
-        <table className="table  table-striped">
-          <thead>
-            <tr>
-              <th scope="col">Имя</th>
-              <th scope="col">Качества</th>
-              <th scope="col">Профессия</th>
-              <th scope="col">Встретился, раз</th>
-              <th scope="col">Оценка</th>
-              <th scope="col">Избранное</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {userCrop.map((user) => (
-              <User
-                user={user}
-                key={user._id}
-                onDelete={onDelete}
-                toggleBookmark={toggleBookmark}
-              />
-            ))}
-          </tbody>
-        </table>
-      )}
-      <Pagination
-        itemsCount={count}
-        pageSize={pageSize}
-        onPageChange={handlePageChange}
-        currentPage={currentPage}
-        userCrop={userCrop}
-      />
-    </>
+      <div className="d-flex flex-column">
+        <SearchStatus users={filteredUsers} />
+        {users.length > 0 && (
+          <table className="table  table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Имя</th>
+                <th scope="col">Качества</th>
+                <th scope="col">Профессия</th>
+                <th scope="col">Встретился, раз</th>
+                <th scope="col">Оценка</th>
+                <th scope="col">Избранное</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {userCrop.map((user) => (
+                <User
+                  user={user}
+                  key={user._id}
+                  onDelete={onDelete}
+                  toggleBookmark={toggleBookmark}
+                />
+              ))}
+            </tbody>
+          </table>
+        )}
+        <div className="d-flex justify-content-center">
+          <Pagination
+            itemsCount={count}
+            pageSize={pageSize}
+            onPageChange={handlePageChange}
+            currentPage={currentPage}
+            userCrop={userCrop}
+          />
+        </div>
+      </div>
+    </div>
   );
 }
 
