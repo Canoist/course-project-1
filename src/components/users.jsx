@@ -19,12 +19,15 @@ function Users({ users, onDelete, toggleBookmark }) {
 
   const handleProfessionSelect = (item) => {
     setSelectedProf(item);
-    setCurrentPage(1);
   };
 
   const clearFilter = () => {
     setSelectedProf();
   };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedProf]);
 
   useEffect(() => {
     API.professions.fetchAll().then((data) => {
