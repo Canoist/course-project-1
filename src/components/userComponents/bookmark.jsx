@@ -19,9 +19,9 @@ function Bookmark({ status, toggleBookmark, id }) {
 }
 
 Bookmark.propTypes = {
-  status: PropTypes.bool,
-  toggleBookmark: PropTypes.func,
-  id: PropTypes.string
+  status: PropTypes.bool.isRequired,
+  toggleBookmark: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired
 };
 
 export default Bookmark;
