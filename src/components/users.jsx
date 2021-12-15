@@ -11,14 +11,14 @@ function Users({ users, onDelete, toggleBookmark }) {
   const pageSize = 4;
   const [professions, setProfessions] = useState();
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedProf, setSelectedProf] = useState();
   const handlePageChange = (pageIndex) => {
     setCurrentPage(pageIndex);
   };
-  const handleProfessionSelect = () => {
-    console.log(professions);
+  const handleProfessionSelect = (item) => {
+    setSelectedProf(item);
   };
   useEffect(() => {
-    console.log("request");
     API.professions.fetchAll().then((data) => {
       setProfessions(data);
     });
@@ -30,8 +30,7 @@ function Users({ users, onDelete, toggleBookmark }) {
         <GroupList
           items={professions}
           onItemSelect={handleProfessionSelect}
-          valueProperty="_id"
-          contentProperty="name"
+          selectedItem={selectedProf}
         />
       )}
 
