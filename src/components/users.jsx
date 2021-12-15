@@ -8,7 +8,7 @@ import API from "../api";
 
 function Users({ users, onDelete, toggleBookmark }) {
   const count = users.length;
-  const pageSize = 4;
+  const pageSize = 2;
   const [professions, setProfessions] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProf, setSelectedProf] = useState();
@@ -18,20 +18,31 @@ function Users({ users, onDelete, toggleBookmark }) {
   const handleProfessionSelect = (item) => {
     setSelectedProf(item);
   };
+  const clearFilter = () => {
+    setSelectedProf();
+  };
   useEffect(() => {
     API.professions.fetchAll().then((data) => {
       setProfessions(data);
     });
   }, []);
-  const userCrop = paginate(users, currentPage, pageSize);
+  const filteredUsers = selectedProf
+    ? users.filter((user) => user.profession === selectedProf)
+    : users;
+  const userCrop = paginate(filteredUsers, currentPage, pageSize);
   return (
     <>
       {professions && (
-        <GroupList
-          items={professions}
-          onItemSelect={handleProfessionSelect}
-          selectedItem={selectedProf}
-        />
+        <>
+          <GroupList
+            items={professions}
+            onItemSelect={handleProfessionSelect}
+            selectedItem={selectedProf}
+          />
+          <button className="btn btn-secondary mt-2" onClick={clearFilter}>
+            Очистить
+          </button>
+        </>
       )}
 
       {users.length > 0 && (
