@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import { paginate } from "../utils/paginate";
 import Pagination from "./pagination";
 import PropTypes from "prop-types";
-import User from "./user";
 import SearchStatus from "./searchStatus";
 import GroupList from "./groupList";
 import API from "../api";
+import UsersTable from "./usersTable";
 
 function Users({ users, onDelete, toggleBookmark }) {
   const pageSize = 2;
@@ -63,29 +63,11 @@ function Users({ users, onDelete, toggleBookmark }) {
       <div className="d-flex flex-column">
         <SearchStatus users={filteredUsers} />
         {users.length > 0 && (
-          <table className="table  table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Имя</th>
-                <th scope="col">Качества</th>
-                <th scope="col">Профессия</th>
-                <th scope="col">Встретился, раз</th>
-                <th scope="col">Оценка</th>
-                <th scope="col">Избранное</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {userCrop.map((user) => (
-                <User
-                  user={user}
-                  key={user._id}
-                  onDelete={onDelete}
-                  toggleBookmark={toggleBookmark}
-                />
-              ))}
-            </tbody>
-          </table>
+          <UsersTable
+            users={userCrop}
+            onDelete={onDelete}
+            toggleBookmark={toggleBookmark}
+          />
         )}
         <div className="d-flex justify-content-center">
           <Pagination
