@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import React, { useEffect, useState } from "react";
 import { paginate } from "../utils/paginate";
 import Pagination from "./pagination";
@@ -36,7 +37,10 @@ function Users({ users, onDelete, toggleBookmark }) {
   }, []);
 
   const filteredUsers = selectedProf
-    ? users.filter((user) => user.profession.name === selectedProf.name)
+    ? users.filter(
+        (user) =>
+          JSON.stringify(user.profession) === JSON.stringify(selectedProf)
+      )
     : users;
 
   const count = filteredUsers.length;
