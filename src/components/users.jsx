@@ -21,6 +21,9 @@ function Users({ users, onDelete, toggleBookmark }) {
   const handleProfessionSelect = (item) => {
     setSelectedProf(item);
   };
+  const handleSort = (item) => {
+    console.log(item);
+  };
 
   const clearFilter = () => {
     setSelectedProf();
@@ -67,6 +70,7 @@ function Users({ users, onDelete, toggleBookmark }) {
             users={userCrop}
             onDelete={onDelete}
             toggleBookmark={toggleBookmark}
+            onSort={handleSort}
           />
         )}
         <div className="d-flex justify-content-center">
