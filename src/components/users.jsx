@@ -24,14 +24,7 @@ function Users({ users, onDelete, toggleBookmark }) {
     setSelectedProf(item);
   };
   const handleSort = (item) => {
-    if (sortBy.iter === item) {
-      setSortBy((prevState) => ({
-        ...prevState,
-        order: prevState.order === "asc" ? "desc" : "asc"
-      }));
-    } else {
-      setSortBy({ iter: item, order: "asc" });
-    }
+    setSortBy(item);
   };
 
   const clearFilter = () => {
@@ -81,6 +74,7 @@ function Users({ users, onDelete, toggleBookmark }) {
             onDelete={onDelete}
             toggleBookmark={toggleBookmark}
             onSort={handleSort}
+            currentSort={sortBy}
           />
         )}
         <div className="d-flex justify-content-center">
