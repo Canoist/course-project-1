@@ -1,6 +1,6 @@
 import React from "react";
-import Bookmark from "./userComponents/bookmark";
-import Qualites from "./userComponents/qualities";
+import Bookmark from "./tableComponents/bookmark";
+import Qualites from "./tableComponents/qualities";
 import PropTypes from "prop-types";
 
 function User({ user, onDelete, toggleBookmark }) {

@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import SearchStatus from "./searchStatus";
 import GroupList from "./groupList";
 import API from "../api";
-import UsersTable from "./usersTable";
+import UsersTable from "./tableComponents/usersTable";
 import _ from "lodash";
 
 function Users({ users, onDelete, toggleBookmark }) {
@@ -14,7 +14,7 @@ function Users({ users, onDelete, toggleBookmark }) {
   const [professions, setProfessions] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProf, setSelectedProf] = useState();
-  const [sortBy, setSortBy] = useState({ iter: "name", orders: "asc" });
+  const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" });
 
   const handlePageChange = (pageIndex) => {
     setCurrentPage(pageIndex);

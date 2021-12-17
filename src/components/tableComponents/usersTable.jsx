@@ -1,5 +1,5 @@
 import React from "react";
-import User from "./user";
+import User from "../user";
 import PropTypes from "prop-types";
 
 const UsersTable = ({
