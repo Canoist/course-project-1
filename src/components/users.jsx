@@ -7,12 +7,14 @@ import SearchStatus from "./searchStatus";
 import GroupList from "./groupList";
 import API from "../api";
 import UsersTable from "./usersTable";
+import _ from "lodash";
 
 function Users({ users, onDelete, toggleBookmark }) {
-  const pageSize = 2;
+  const pageSize = 4;
   const [professions, setProfessions] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProf, setSelectedProf] = useState();
+  const [sortBy, setSortBy] = useState({ iter: "name", orders: "asc" });
 
   const handlePageChange = (pageIndex) => {
     setCurrentPage(pageIndex);
@@ -22,7 +24,14 @@ function Users({ users, onDelete, toggleBookmark }) {
     setSelectedProf(item);
   };
   const handleSort = (item) => {
-    console.log(item);
+    if (sortBy.iter === item) {
+      setSortBy((prevState) => ({
+        ...prevState,
+        order: prevState.order === "asc" ? "desc" : "asc"
+      }));
+    } else {
+      setSortBy({ iter: item, order: "asc" });
+    }
   };
 
   const clearFilter = () => {
@@ -47,7 +56,8 @@ function Users({ users, onDelete, toggleBookmark }) {
     : users;
 
   const count = filteredUsers.length;
-  const userCrop = paginate(filteredUsers, currentPage, pageSize);
+  const sortedUsers = _.orderBy(filteredUsers, sortBy.iter, sortBy.order);
+  const userCrop = paginate(sortedUsers, currentPage, pageSize);
 
   return (
     <div className="d-flex">

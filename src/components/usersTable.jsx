@@ -11,7 +11,7 @@ const UsersTable = ({ users, onDelete, toggleBookmark, onSort }) => {
             Имя
           </th>
           <th scope="col">Качества</th>
-          <th onClick={() => onSort("professions.name")} scope="col">
+          <th onClick={() => onSort("profession.name")} scope="col">
             Профессия
           </th>
           <th onClick={() => onSort("completedMeetings")} scope="col">
