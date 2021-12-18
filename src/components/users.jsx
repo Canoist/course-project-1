@@ -14,7 +14,10 @@ function Users({ users, onDelete, toggleBookmark }) {
   const [professions, setProfessions] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProf, setSelectedProf] = useState();
-  const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" });
+  const [sortBy, setSortBy] = useState({
+    path: "name",
+    order: "asc"
+  });
 
   const handlePageChange = (pageIndex) => {
     setCurrentPage(pageIndex);
@@ -44,12 +47,17 @@ function Users({ users, onDelete, toggleBookmark }) {
   const filteredUsers = selectedProf
     ? users.filter(
         (user) =>
-          JSON.stringify(user.profession) === JSON.stringify(selectedProf)
+          JSON.stringify(user.profession) ===
+          JSON.stringify(selectedProf)
       )
     : users;
 
   const count = filteredUsers.length;
-  const sortedUsers = _.orderBy(filteredUsers, sortBy.iter, sortBy.order);
+  const sortedUsers = _.orderBy(
+    filteredUsers,
+    sortBy.path,
+    sortBy.order
+  );
   const userCrop = paginate(sortedUsers, currentPage, pageSize);
 
   return (
@@ -61,7 +69,10 @@ function Users({ users, onDelete, toggleBookmark }) {
             onItemSelect={handleProfessionSelect}
             selectedItem={selectedProf}
           />
-          <button className="btn btn-secondary mt-2" onClick={clearFilter}>
+          <button
+            className="btn btn-secondary mt-2"
+            onClick={clearFilter}
+          >
             Очистить
           </button>
         </div>
@@ -74,7 +85,7 @@ function Users({ users, onDelete, toggleBookmark }) {
             onDelete={onDelete}
             toggleBookmark={toggleBookmark}
             onSort={handleSort}
-            currentSort={sortBy}
+            selectedSort={sortBy}
           />
         )}
         <div className="d-flex justify-content-center">

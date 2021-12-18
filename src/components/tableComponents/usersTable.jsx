@@ -1,67 +1,68 @@
 import React from "react";
-import User from "../user";
 import PropTypes from "prop-types";
+import TableHeader from "./tableHeader";
+import TableBody from "./tableBody";
+import Bookmark from "./bookmark";
+import QualitiesList from "./qualitiesList";
 
 const UsersTable = ({
   users,
   onDelete,
   toggleBookmark,
   onSort,
-  currentSort
+  selectedSort,
+  ...rest
 }) => {
-  const handleSort = (item) => {
-    if (currentSort.iter === item) {
-      onSort(({
-        ...currentSort,
-        order: currentSort.order === "asc" ? "desc" : "asc"
-      }));
-    } else {
-      onSort({ iter: item, order: "asc" });
+  const columns = {
+    name: { path: "name", name: "Имя" },
+    qualities: {
+      name: "Качества",
+      component: (user) => (
+        <QualitiesList qualities={user.qualities} />
+      )
+    },
+    professions: { path: "profession.name", name: "Профессия" },
+    completedMeetings: {
+      path: "completedMeetings",
+      name: "Встретился, раз"
+    },
+    rate: { path: "rate", name: "Оценка" },
+    bookmark: {
+      path: "bookmark",
+      name: "Избранное",
+      component: (user) => (
+        <Bookmark
+          status={user.bookmark}
+          toggleBookmark={toggleBookmark}
+          id={user._id}
+        />
+      )
+    },
+    delete: {
+      component: (user) => (
+        <button
+          onClick={() => onDelete(user)}
+          className="btn btn-danger"
+        >
+          delete
+        </button>
+      )
     }
   };
   return (
     <table className="table  table-striped">
-      <thead>
-        <tr>
-          <th onClick={() => handleSort("name")} scope="col">
-            Имя
-          </th>
-          <th scope="col">Качества</th>
-          <th onClick={() => handleSort("profession.name")} scope="col">
-            Профессия
-          </th>
-          <th onClick={() => handleSort("completedMeetings")} scope="col">
-            Встретился, раз
-          </th>
-          <th onClick={() => handleSort("rate")} scope="col">
-            Оценка
-          </th>
-          <th onClick={() => handleSort("bookmark")} scope="col">
-            Избранное
-          </th>
-          <th />
-        </tr>
-      </thead>
-      <tbody>
-        {users.map((user) => (
-          <User
-            user={user}
-            key={user._id}
-            onDelete={onDelete}
-            toggleBookmark={toggleBookmark}
-          />
-        ))}
-      </tbody>
+      <TableHeader {...{ onSort, selectedSort, columns }} />
+      <TableBody {...{ columns, data: users }} />
     </table>
   );
 };
 
 UsersTable.propTypes = {
   users: PropTypes.array.isRequired,
-  onDelete: PropTypes.func,
-  toggleBookmark: PropTypes.func,
-  onSort: PropTypes.func,
-  currentSort: PropTypes.object
+  onDelete: PropTypes.func.isRequired,
+  toggleBookmark: PropTypes.func.isRequired,
+  onSort: PropTypes.func.isRequired,
+  selectedSort: PropTypes.object.isRequired
 };
 
 export default UsersTable;
