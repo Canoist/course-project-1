@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import _ from "lodash";
 import PropTypes from "prop-types";
 
@@ -10,6 +10,11 @@ const Pagination = ({
   userCrop
 }) => {
   const pageCount = Math.ceil(itemsCount / pageSize);
+
+  useEffect(() => {
+    onPageChange(pageCount);
+  }, [pageCount]);
+
   if (pageCount === 1 || userCrop <= pageSize) return null;
   const pages = _.range(1, pageCount + 1);
   return (
@@ -17,10 +22,15 @@ const Pagination = ({
       <ul className="pagination">
         {pages.map((page) => (
           <li
-            className={"page-item" + (page === currentPage ? " active" : "")}
+            className={
+              "page-item" + (page === currentPage ? " active" : "")
+            }
             key={"page_" + page}
           >
-            <a className="page-link" onClick={() => onPageChange(page)}>
+            <a
+              className="page-link"
+              onClick={() => onPageChange(page)}
+            >
               {page}
             </a>
           </li>
