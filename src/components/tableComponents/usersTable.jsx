@@ -1,25 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
-import TableHeader from "./tableHeader";
-import TableBody from "./tableBody";
 import Bookmark from "./bookmark";
 import QualitiesList from "./qualitiesList";
+import Table from "./table";
 
-const UsersTable = ({
-  users,
-  onDelete,
-  toggleBookmark,
-  onSort,
-  selectedSort,
-  ...rest
-}) => {
+const UsersTable = ({ users, onDelete, toggleBookmark, onSort, selectedSort, ...rest }) => {
   const columns = {
     name: { path: "name", name: "Имя" },
     qualities: {
       name: "Качества",
-      component: (user) => (
-        <QualitiesList qualities={user.qualities} />
-      )
+      component: (user) => <QualitiesList qualities={user.qualities} />
     },
     professions: { path: "profession.name", name: "Профессия" },
     completedMeetings: {
@@ -31,30 +21,18 @@ const UsersTable = ({
       path: "bookmark",
       name: "Избранное",
       component: (user) => (
-        <Bookmark
-          status={user.bookmark}
-          toggleBookmark={toggleBookmark}
-          id={user._id}
-        />
+        <Bookmark status={user.bookmark} toggleBookmark={toggleBookmark} id={user._id} />
       )
     },
     delete: {
       component: (user) => (
-        <button
-          onClick={() => onDelete(user)}
-          className="btn btn-danger"
-        >
+        <button onClick={() => onDelete(user)} className="btn btn-danger">
           delete
         </button>
       )
     }
   };
-  return (
-    <table className="table  table-striped">
-      <TableHeader {...{ onSort, selectedSort, columns }} />
-      <TableBody {...{ columns, data: users }} />
-    </table>
-  );
+  return <Table onSort={onSort} selectedSort={selectedSort} columns={columns} data={users} />;
 };
 
 UsersTable.propTypes = {
