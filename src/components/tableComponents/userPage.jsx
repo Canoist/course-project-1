@@ -1,16 +1,20 @@
-import React from "react";
+/* eslint-disable multiline-ternary */
+import React, { useEffect, useState } from "react";
 import QualitiesList from "./qualitiesList";
-import PropTypes from "prop-types";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import API from "../../api";
 
-const UserPage = (props) => {
-  const { user } = props;
-  console.log(user);
+const UserPage = () => {
+  const params = useParams();
+  const [user, setUser] = useState("");
+  useEffect(() => {
+    API.users.getById(params.id).then((data) => setUser(data));
+  }, []);
   const history = useHistory();
   const handleBackToAllUsers = () => {
-    history.push("/login");
+    history.push("/users");
   };
-  return (
+  return user ? (
     <div>
       <h1>{user.name}</h1>
       <h2>Профессия: {user.profession.name}</h2>
@@ -21,11 +25,9 @@ const UserPage = (props) => {
         Все пользователи
       </button>
     </div>
+  ) : (
+    <h1>Loading...</h1>
   );
-};
-
-UserPage.propTypes = {
-  user: PropTypes.object.isRequired
 };
 
 export default UserPage;
