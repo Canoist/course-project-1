@@ -1,11 +1,11 @@
 /* eslint-disable indent */
 import React, { useEffect, useState } from "react";
-import { paginate } from "../utils/paginate";
-import Pagination from "./pagination";
-import SearchStatus from "./searchStatus";
-import GroupList from "./groupList";
-import API from "../api";
-import UsersTable from "./tableComponents/usersTable";
+import { paginate } from "../../utils/paginate";
+import Pagination from "../pagination";
+import SearchStatus from "../searchStatus";
+import GroupList from "../groupList";
+import API from "../../api";
+import UsersTable from "../tableComponents/usersTable";
 import _ from "lodash";
 
 function Users() {
