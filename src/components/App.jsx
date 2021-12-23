@@ -9,19 +9,11 @@ const App = () => {
   return (
     <div>
       <NavBar />
-      {/* <Router> */}
       <Switch>
-        <Route path="/login">
-          <Login />
-        </Route>
-        <Route path="/users">
-          <Users />
-        </Route>
-        <Route path="/">
-          <Main />
-        </Route>
+        <Route path="/login" component={Login} />
+        <Route path="/users" component={Users} />
+        <Route path="/" component={Main} />
       </Switch>
-      {/* </Router> */}
     </div>
   );
 };
