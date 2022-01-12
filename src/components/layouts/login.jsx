@@ -41,26 +41,37 @@ const Login = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <TextField
-        name="email"
-        value={data.email}
-        onChange={handleChange}
-        label="E-mail"
-        error={errors.email}
-      />
-      <TextField
-        name="password"
-        value={data.password}
-        onChange={handleChange}
-        type="password"
-        label="Password"
-        error={errors.password}
-      />
-      <button type="submit" disabled={Object.keys(errors).length !== 0}>
-        Submit
-      </button>
-    </form>
+    <div className="container mt-5">
+      <div className="row">
+        <div className="col-md-6 offset-md-3 shadow p-4">
+          <h3 className="mb-4">Login</h3>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              name="email"
+              value={data.email}
+              onChange={handleChange}
+              label="E-mail"
+              error={errors.email}
+            />
+            <TextField
+              name="password"
+              value={data.password}
+              onChange={handleChange}
+              type="password"
+              label="Password"
+              error={errors.password}
+            />
+            <button
+              className="btn btn-primary w-100 mx-auto"
+              type="submit"
+              disabled={Object.keys(errors).length !== 0}
+            >
+              Submit
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
   );
 };
 export default Login;
