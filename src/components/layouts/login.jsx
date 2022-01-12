@@ -11,7 +11,12 @@ const Login = () => {
       isRequired: { message: "Электронная почта обязательна для заполнения" },
       isEmail: { message: "Email введен некорректно" }
     },
-    password: { isRequired: { message: "Пароль обязателен для заполнения" } }
+    password: {
+      isRequired: { message: "Пароль обязателен для заполнения" },
+      isContainCapital: { message: "Пароль должен содержать хотя бы одну заглавную букву" },
+      isContainDigit: { message: "Пароль должен содержать хотя бы одну цифру" },
+      minLength: { message: "Длина пароля должна быть не менее 7 символов", value: 7 }
+    }
   };
 
   useEffect(() => {
