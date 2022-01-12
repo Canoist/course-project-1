@@ -2,7 +2,13 @@ import React, { useEffect } from "react";
 import _ from "lodash";
 import PropTypes from "prop-types";
 
-const Pagination = ({ itemsCount, pageSize, onPageChange, currentPage, userCrop }) => {
+const Pagination = ({
+  itemsCount,
+  pageSize,
+  onPageChange,
+  currentPage,
+  userCrop
+}) => {
   const pageCount = Math.ceil(itemsCount / pageSize);
 
   useEffect(() => {

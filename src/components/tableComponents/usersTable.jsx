@@ -5,7 +5,14 @@ import QualitiesList from "./qualitiesList";
 import Table from "./table";
 import { Link } from "react-router-dom";
 
-const UsersTable = ({ users, onDelete, toggleBookmark, onSort, selectedSort, ...rest }) => {
+const UsersTable = ({
+  users,
+  onDelete,
+  toggleBookmark,
+  onSort,
+  selectedSort,
+  ...rest
+}) => {
   const columns = {
     name: {
       path: "name",
@@ -26,7 +33,11 @@ const UsersTable = ({ users, onDelete, toggleBookmark, onSort, selectedSort, ...
       path: "bookmark",
       name: "Избранное",
       component: (user) => (
-        <Bookmark status={user.bookmark} toggleBookmark={toggleBookmark} id={user._id} />
+        <Bookmark
+          status={user.bookmark}
+          toggleBookmark={toggleBookmark}
+          id={user._id}
+        />
       )
     },
     delete: {
@@ -37,7 +48,14 @@ const UsersTable = ({ users, onDelete, toggleBookmark, onSort, selectedSort, ...
       )
     }
   };
-  return <Table onSort={onSort} selectedSort={selectedSort} columns={columns} data={users} />;
+  return (
+    <Table
+      onSort={onSort}
+      selectedSort={selectedSort}
+      columns={columns}
+      data={users}
+    />
+  );
 };
 
 UsersTable.propTypes = {
