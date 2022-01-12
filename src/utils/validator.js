@@ -5,15 +5,17 @@ export function validator(data, config) {
       case "isRequired":
         if (data.trim() === "") return config.message;
         break;
-
-      default:
+      case "isEmail": {
+        const emailRegExp = /^\S+@\S+\.\S+$/g;
+        if (!emailRegExp.test(data)) return config.message;
         break;
+      }
     }
   };
   for (const fieldName in data) {
     for (const validateMethod in config[fieldName]) {
       const error = validate(validateMethod, data[fieldName], config[fieldName][validateMethod]);
-      if (error) {
+      if (error && !errors[fieldName]) {
         errors[fieldName] = error;
       }
     }
