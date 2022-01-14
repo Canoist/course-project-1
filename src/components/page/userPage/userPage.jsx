@@ -1,8 +1,8 @@
 /* eslint-disable multiline-ternary */
 import React, { useEffect, useState } from "react";
-import QualitiesList from "./qualitiesList";
+import Qualities from "../../ui/qualities";
 import { useHistory, useParams } from "react-router-dom";
-import API from "../../api";
+import API from "../../../api";
 
 const UserPage = () => {
   const params = useParams();
@@ -18,7 +18,7 @@ const UserPage = () => {
     <div>
       <h1>{user.name}</h1>
       <h2>Профессия: {user.profession.name}</h2>
-      <QualitiesList qualities={user.qualities} />
+      <Qualities qualities={user.qualities} />
       <h4>Встретился раз: {user.completedMeetings}</h4>
       <h2>Rate: {user.rate}/5</h2>
       <button className="btn btn-secondary" onClick={handleBackToAllUsers}>

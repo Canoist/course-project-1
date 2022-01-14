@@ -1,14 +1,14 @@
 /* eslint-disable indent */
 import React, { useEffect, useState } from "react";
-import { paginate } from "../../utils/paginate";
-import Pagination from "../pagination";
-import SearchStatus from "../searchStatus";
-import GroupList from "../groupList";
-import API from "../../api";
-import UsersTable from "../tableComponents/usersTable";
+import { paginate } from "../../../utils/paginate";
+import Pagination from "../../common/pagination";
+import SearchStatus from "../../ui/searchStatus";
+import GroupList from "../../common/groupList";
+import API from "../../../api";
 import _ from "lodash";
+import UsersTable from "../../ui/usersTable";
 
-function Users() {
+function UsersListPage() {
   const pageSize = 4;
   const [professions, setProfessions] = useState();
   const [currentPage, setCurrentPage] = useState(1);
@@ -129,4 +129,4 @@ function Users() {
   return "loading...";
 }
 
-export default Users;
+export default UsersListPage;
