@@ -20,6 +20,7 @@ function UsersListPage() {
 
   const [users, setUsers] = useState();
   const [searchedUsers, setSearchedUsers] = useState();
+  const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
     API.users.fetchAll().then((data) => setUsers(data));
@@ -39,6 +40,8 @@ function UsersListPage() {
   };
 
   const handleProfessionSelect = (item) => {
+    setSearchedUsers(undefined);
+    setInputValue("");
     setSelectedProf(item);
   };
   const handleSort = (item) => {
@@ -47,6 +50,7 @@ function UsersListPage() {
 
   const handleSearch = (event) => {
     const value = event.target.value.trim();
+    setInputValue(event.target.value);
     setSelectedProf();
     setSearchedUsers(
       value.length > 0
@@ -57,7 +61,7 @@ function UsersListPage() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedProf]);
+  }, [selectedProf, inputValue]);
 
   useEffect(() => {
     API.professions.fetchAll().then((data) => {
@@ -104,6 +108,7 @@ function UsersListPage() {
             className="form-control"
             placeholder="Search..."
             onChange={handleSearch}
+            value={inputValue}
           />
           {users.length > 0 && (
             <UsersTable
