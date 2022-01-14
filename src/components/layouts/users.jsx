@@ -19,6 +19,7 @@ function Users() {
   });
 
   const [users, setUsers] = useState();
+  const [searchedUsers, setSearchedUsers] = useState();
 
   useEffect(() => {
     API.users.fetchAll().then((data) => setUsers(data));
@@ -44,6 +45,16 @@ function Users() {
     setSortBy(item);
   };
 
+  const handleSearch = (event) => {
+    const value = event.target.value.trim();
+    setSelectedProf();
+    setSearchedUsers(
+      value.length > 0
+        ? users.filter((user) => user.name.toLowerCase().includes(value))
+        : users
+    );
+  };
+
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedProf]);
@@ -59,12 +70,14 @@ function Users() {
       setSelectedProf();
     };
 
-    const filteredUsers = selectedProf
-      ? users.filter(
-          (user) =>
-            JSON.stringify(user.profession) === JSON.stringify(selectedProf)
-        )
-      : users;
+    const filteredUsers =
+      searchedUsers ||
+      (selectedProf
+        ? users.filter(
+            (user) =>
+              JSON.stringify(user.profession) === JSON.stringify(selectedProf)
+          )
+        : users);
 
     const count = filteredUsers.length;
     const sortedUsers = _.orderBy(filteredUsers, sortBy.path, sortBy.order);
@@ -86,6 +99,12 @@ function Users() {
         )}
         <div className="d-flex flex-column">
           <SearchStatus users={filteredUsers} />
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search..."
+            onChange={handleSearch}
+          />
           {users.length > 0 && (
             <UsersTable
               users={userCrop}
@@ -101,7 +120,6 @@ function Users() {
               pageSize={pageSize}
               onPageChange={handlePageChange}
               currentPage={currentPage}
-              userCrop={userCrop}
             />
           </div>
         </div>
