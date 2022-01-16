@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import React, { useEffect, useState } from "react";
 import { paginate } from "../../../utils/paginate";
 import Pagination from "../../common/pagination";

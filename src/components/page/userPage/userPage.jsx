@@ -1,4 +1,3 @@
-/* eslint-disable multiline-ternary */
 import React, { useEffect, useState } from "react";
 import Qualities from "../../ui/qualities";
 import { useHistory, useParams } from "react-router-dom";
