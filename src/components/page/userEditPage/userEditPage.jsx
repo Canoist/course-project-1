@@ -1,31 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { validator } from "../../../utils/validator";
-import API from "../../../api";
 import TextField from "../../common/form/textFields";
 import SelectField from "../../common/form/selectField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import RadioField from "../../common/form/radioField";
+import PropTypes from "prop-types";
+import { useHistory } from "react-router-dom";
 
-const UserEditPage = () => {
+const UserEditPage = ({ user, qualities, professions }) => {
   const [data, setData] = useState({
-    name: "",
-    email: "",
-    profession: "",
-    sex: "male",
-    qualities: []
+    name: user.name,
+    email: user.email,
+    profession: user.profession.name,
+    sex: user.sex,
+    qualities: user.qualities
   });
   const [errors, setErrors] = useState({});
-  const [professions, setProfessions] = useState();
-  const [qualities, setQualities] = useState({});
+  const history = useHistory();
 
-  useEffect(() => {
-    API.professions.fetchAll().then((data) => {
-      setProfessions(data);
-    });
-    API.qualities.fetchAll().then((data) => {
-      setQualities(data);
-    });
-  }, []);
+  useEffect(() => {}, []);
 
   const validatorConfig = {
     name: {
@@ -34,9 +27,6 @@ const UserEditPage = () => {
     email: {
       isRequired: { message: "Электронная почта обязательна для заполнения" },
       isEmail: { message: "Email введен некорректно" }
-    },
-    profession: {
-      isRequired: { message: "Обязательно выбрите профессию" }
     }
   };
 
@@ -61,7 +51,11 @@ const UserEditPage = () => {
     console.log(data);
   };
 
-  return (
+  const handleBackToUser = () => {
+    history.push(`/users/${user}`);
+  };
+
+  return data ? (
     <div className="container mt-5">
       <div className="row">
         <div className="col-md-6 offset-md-3 shadow p-4">
@@ -92,7 +86,10 @@ const UserEditPage = () => {
               value={data.profession}
             />
             <MultiSelectField
-              defaultValue={data.qualities}
+              defaultValue={data.qualities.map((qual) => ({
+                label: qual.name,
+                value: qual.id
+              }))}
               options={qualities}
               onChange={handleChange}
               name="qualities"
@@ -114,13 +111,23 @@ const UserEditPage = () => {
               className="btn btn-primary w-100 mx-auto"
               type="submit"
               disabled={Object.keys(errors).length !== 0}
+              onClick={handleBackToUser}
             >
-              Submit
+              Обновить
             </button>
           </form>
         </div>
       </div>
     </div>
+  ) : (
+    <h1>Loading...</h1>
   );
 };
+
+UserEditPage.propTypes = {
+  user: PropTypes.object,
+  qualities: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  professions: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+};
+
 export default UserEditPage;
