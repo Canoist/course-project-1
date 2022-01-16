@@ -14,6 +14,7 @@ const UserPage = () => {
   const handleBackToAllUsers = () => {
     history.push("/users");
   };
+
   return user ? (
     <div>
       <h1>{user.name}</h1>
