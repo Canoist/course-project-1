@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Qualities from "../../ui/qualities";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import API from "../../../api";
+import PropTypes from "prop-types";
 
-const UserPage = () => {
-  const params = useParams();
+const UserPage = ({ userId }) => {
   const [user, setUser] = useState("");
   useEffect(() => {
-    API.users.getById(params.id).then((data) => setUser(data));
+    API.users.getById(userId).then((data) => setUser(data));
   }, []);
   const history = useHistory();
   const handleBackToAllUsers = () => {
@@ -28,6 +28,9 @@ const UserPage = () => {
   ) : (
     <h1>Loading...</h1>
   );
+};
+UserPage.propTypes = {
+  userId: PropTypes.string.isRequired
 };
 
 export default UserPage;
