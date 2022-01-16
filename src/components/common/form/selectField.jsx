@@ -9,6 +9,10 @@ const SelectField = ({
   options,
   error
 }) => {
+  const handleChange = ({ target }) => {
+    onChange({ name: target.name, value: target.value });
+  };
+
   const optionsArray =
     !Array.isArray(options) && typeof options === "object"
       ? Object.keys(options).map((optionName) => ({
@@ -29,7 +33,7 @@ const SelectField = ({
         value={value}
         className={getInputClasses()}
         id="validationCustom04"
-        onChange={onChange}
+        onChange={handleChange}
         name="profession"
       >
         <option disabled value="">
@@ -52,7 +56,7 @@ SelectField.propTypes = {
   value: PropTypes.string,
   onChange: PropTypes.func,
   defaultOption: PropTypes.string,
-  options: PropTypes.oneOfType(PropTypes.object, PropTypes.array),
+  options: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   error: PropTypes.string
 };
 
