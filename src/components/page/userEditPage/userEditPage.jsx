@@ -6,16 +6,33 @@ import MultiSelectField from "../../common/form/multiSelectField";
 import RadioField from "../../common/form/radioField";
 import PropTypes from "prop-types";
 import API from "../../../api";
+import { useHistory } from "react-router-dom";
 
-const UserEditPage = ({ user, professions, qualities }) => {
-  const [data, setData] = useState({
-    name: user.name,
-    email: user.email,
-    profession: user.profession,
-    sex: user.sex,
-    qualities: user.qualities
-  });
+const UserEditPage = ({ userId }) => {
+  const [data, setData] = useState({});
+
+  const [professions, setProfessions] = useState();
+  const [qualities, setQualities] = useState({});
   const [errors, setErrors] = useState({});
+  const history = useHistory();
+
+  useEffect(() => {
+    API.users.getById(userId).then((user) =>
+      setData({
+        name: user.name,
+        email: user.email,
+        profession: user.profession,
+        sex: user.sex,
+        qualities: user.qualities
+      })
+    );
+    API.professions.fetchAll().then((data) => {
+      setProfessions(data);
+    });
+    API.qualities.fetchAll().then((data) => {
+      setQualities(data);
+    });
+  }, []);
 
   const validatorConfig = {
     name: {
@@ -50,15 +67,16 @@ const UserEditPage = ({ user, professions, qualities }) => {
         }
       }
     }
-    console.log(newQualities);
     setData((prev) => ({ ...prev, qualities: newQualities }));
   };
   const handleSubmit = (e) => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return;
-    API.users.update(user._id, data);
-    console.log(data);
+    API.users.update(userId, data).then((data) => {
+      console.log(data);
+      history.push(`/users/${userId}`);
+    });
   };
 
   return data && professions ? (
@@ -88,7 +106,7 @@ const UserEditPage = ({ user, professions, qualities }) => {
               error={errors.profession}
               options={professions}
               label="Выберете вашу профессию"
-              defaultOption={user.profession.name}
+              defaultOption={data.profession.name}
               value={data.profession._id}
             />
             <MultiSelectField
@@ -112,19 +130,14 @@ const UserEditPage = ({ user, professions, qualities }) => {
               onChange={handleChange}
               label="Выберет ваш пол"
             />
-            <a
-              href={`/users/${user._id}`}
+            <button
               className="btn btn-primary w-100 mx-auto"
               type="submit"
               disabled={Object.keys(errors).length !== 0}
               onSubmit={handleSubmit}
             >
-              {/* <button
-              > */}
-              {/* `/users/${user._id}` */}
               Обновить
-              {/* </button> */}
-            </a>
+            </button>
           </form>
         </div>
       </div>
@@ -135,9 +148,7 @@ const UserEditPage = ({ user, professions, qualities }) => {
 };
 
 UserEditPage.propTypes = {
-  user: PropTypes.object,
-  qualities: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  professions: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  userId: PropTypes.string.isRequired
 };
 
 export default UserEditPage;
