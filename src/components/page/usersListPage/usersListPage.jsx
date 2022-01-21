@@ -48,7 +48,7 @@ function UsersListPage() {
   };
 
   const handleSearch = (event) => {
-    const value = event.target.value.trim();
+    const value = event.target.value.trim().toLowerCase();
     setInputValue(event.target.value);
     setSelectedProf();
     setSearchedUsers(
