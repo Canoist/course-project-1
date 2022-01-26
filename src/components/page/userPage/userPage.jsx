@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Qualities from "../../ui/qualities";
 import { useHistory } from "react-router-dom";
 import API from "../../../api";
 import PropTypes from "prop-types";
 import UserCard from "../../ui/userCard";
+import QualitiesCard from "../../ui/qualities/qualitiesCard";
 
 const UserPage = ({ userId }) => {
   const [user, setUser] = useState("");
@@ -16,6 +16,7 @@ const UserPage = ({ userId }) => {
     history.push(`/users/${userId}/edit`);
   };
 
+  console.log(user.qualities);
   return user ? (
     <div className="container">
       <div className="row gutters-sm">
@@ -26,9 +27,9 @@ const UserPage = ({ userId }) => {
             rate={user.rate}
             onClick={handleGoToEditUser}
           />
+          <QualitiesCard qualities={user.qualities} />
         </div>
         <div className="col-md-8">
-          <Qualities qualities={user.qualities} />
           <h4>Встретился раз: {user.completedMeetings}</h4>
           <button className="btn btn-secondary" onClick={handleGoToEditUser}>
             Редактировать
