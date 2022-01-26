@@ -4,6 +4,7 @@ import API from "../../../api";
 import PropTypes from "prop-types";
 import UserCard from "../../ui/userCard";
 import QualitiesCard from "../../ui/qualities/qualitiesCard";
+import MeetingsCard from "../../ui/mettingsCard";
 
 const UserPage = ({ userId }) => {
   const [user, setUser] = useState("");
@@ -16,7 +17,6 @@ const UserPage = ({ userId }) => {
     history.push(`/users/${userId}/edit`);
   };
 
-  console.log(user.qualities);
   return user ? (
     <div className="container">
       <div className="row gutters-sm">
@@ -28,9 +28,9 @@ const UserPage = ({ userId }) => {
             onClick={handleGoToEditUser}
           />
           <QualitiesCard qualities={user.qualities} />
+          <MeetingsCard meets={user.completedMeetings} />
         </div>
         <div className="col-md-8">
-          <h4>Встретился раз: {user.completedMeetings}</h4>
           <button className="btn btn-secondary" onClick={handleGoToEditUser}>
             Редактировать
           </button>
