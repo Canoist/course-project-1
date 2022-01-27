@@ -3,9 +3,7 @@ import PropTypes from "prop-types";
 import API from "../../../api";
 
 const Comment = ({ comment }) => {
-  console.log(comment);
   const [commentOwner, setCommentOwner] = useState({});
-  console.log(commentOwner);
   useEffect(() => {
     API.users.getById(comment.userId).then((data) => setCommentOwner(data));
   }, []);
