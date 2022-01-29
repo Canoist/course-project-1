@@ -16,6 +16,12 @@ const UserPage = ({ userId }) => {
     API.comments.fetchCommentsForUser(userId).then((data) => setComments(data));
   }, []);
 
+  const handleDelete = (id) => {
+    API.comments.remove(id);
+    setComments(comments.filter((c) => c._id === id));
+    console.log("delete", id);
+  };
+
   const history = useHistory();
   const handleGoToEditUser = () => {
     history.push(`/users/${userId}/edit`);
@@ -36,7 +42,11 @@ const UserPage = ({ userId }) => {
         </div>
         <div className="col-md-8">
           <h1>Здесь будут комменты</h1>
-          {comments ? <CommentsList comments={comments} /> : null}
+          {comments ? (
+            <CommentsList comments={comments} onDelete={handleDelete} />
+          ) : (
+            <h1>No comments found</h1>
+          )}
         </div>
       </div>
     </div>

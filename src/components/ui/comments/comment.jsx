@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import API from "../../../api";
+import { displayDate } from "../../../utils/displayDate";
 
-const Comment = ({ comment }) => {
+const Comment = ({ comment, onDelete }) => {
   const [commentOwner, setCommentOwner] = useState({});
   useEffect(() => {
-    API.users.getById(comment.userId).then((data) => setCommentOwner(data));
+    API.users.getById(comment.userId).then((data) => {
+      setCommentOwner(data);
+    });
   }, []);
 
   return (
@@ -30,9 +33,14 @@ const Comment = ({ comment }) => {
                   <div className="d-flex justify-content-between align-items-center">
                     <p className="mb-1 ">
                       {commentOwner.name}
-                      <span className="small">!Published Time</span>
+                      <span className="small mx-2">
+                        {displayDate(comment.created_at)}
+                      </span>
                     </p>
-                    <button className="btn btn-sm text-primary d-flex align-items-center">
+                    <button
+                      className="btn btn-sm text-primary d-flex align-items-center"
+                      onClick={() => onDelete(comment._id)}
+                    >
                       <i className="bi bi-x-lg"></i>
                     </button>
                   </div>
@@ -48,7 +56,8 @@ const Comment = ({ comment }) => {
 };
 
 Comment.propTypes = {
-  comment: PropTypes.object
+  comment: PropTypes.object,
+  onDelete: PropTypes.func
 };
 
 export default Comment;

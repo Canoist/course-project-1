@@ -18,7 +18,7 @@ const QualitiesCard = ({ qualities }) => {
 };
 
 QualitiesCard.propTypes = {
-  qualities: PropTypes.object
+  qualities: PropTypes.array
 };
 
 export default QualitiesCard;
