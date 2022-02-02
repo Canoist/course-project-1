@@ -74,7 +74,6 @@ const UserEditPage = ({ userId }) => {
     const isValid = validate();
     if (!isValid) return;
     API.users.update(userId, data).then((data) => {
-      console.log(data);
       history.push(`/users/${userId}`);
     });
   };

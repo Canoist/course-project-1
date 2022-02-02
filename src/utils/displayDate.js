@@ -20,7 +20,7 @@ export function displayDate(data) {
     return "10 минут назад";
   } else if (minsDif >= 5 && minsDif < 10) {
     return "5 минут назад";
-  } else if (minsDif < 5 && minsDif > 0) {
+  } else if (minsDif < 5 && minsDif >= 0) {
     return "1 минуту назад";
   } else {
     console.error("Error in data display function");
