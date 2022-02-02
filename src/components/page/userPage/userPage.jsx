@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Qualities from "../../ui/qualities";
 import { useHistory } from "react-router-dom";
 import API from "../../../api";
 import PropTypes from "prop-types";
+import UserCard from "../../ui/userCard";
+import QualitiesCard from "../../ui/qualities/qualitiesCard";
+import MeetingsCard from "../../ui/mettingsCard";
+import Comments from "../../ui/comments";
 
 const UserPage = ({ userId }) => {
   const [user, setUser] = useState("");
@@ -10,21 +13,29 @@ const UserPage = ({ userId }) => {
   useEffect(() => {
     API.users.getById(userId).then((data) => setUser(data));
   }, []);
+
   const history = useHistory();
   const handleGoToEditUser = () => {
     history.push(`/users/${userId}/edit`);
   };
 
   return user ? (
-    <div>
-      <h1>{user.name}</h1>
-      <h2>Профессия: {user.profession.name}</h2>
-      <Qualities qualities={user.qualities} />
-      <h4>Встретился раз: {user.completedMeetings}</h4>
-      <h2>Rate: {user.rate}/5</h2>
-      <button className="btn btn-secondary" onClick={handleGoToEditUser}>
-        Редактировать
-      </button>
+    <div className="container">
+      <div className="row gutters-sm">
+        <div className="col-md-4 mb-3">
+          <UserCard
+            name={user.name}
+            profession={user.profession.name}
+            rate={user.rate}
+            onClick={handleGoToEditUser}
+          />
+          <QualitiesCard qualities={user.qualities} />
+          <MeetingsCard meets={user.completedMeetings} />
+        </div>
+        <div className="col-md-8">
+          <Comments />
+        </div>
+      </div>
     </div>
   ) : (
     <h1>Loading...</h1>
