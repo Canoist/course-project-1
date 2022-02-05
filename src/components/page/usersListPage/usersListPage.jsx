@@ -6,6 +6,7 @@ import GroupList from "../../common/groupList";
 import API from "../../../api";
 import _ from "lodash";
 import UsersTable from "../../ui/usersTable";
+import { useUsers } from "../../../hooks/useUsers";
 
 function UsersListPage() {
   const pageSize = 4;
@@ -17,21 +18,19 @@ function UsersListPage() {
     order: "asc"
   });
 
-  const [users, setUsers] = useState();
+  const { users } = useUsers();
   const [searchedUsers, setSearchedUsers] = useState();
   const [inputValue, setInputValue] = useState("");
 
-  useEffect(() => {
-    API.users.fetchAll().then((data) => setUsers(data));
-  }, []);
-
   const handleDelete = (user) => {
-    setUsers(users.filter((p) => p._id !== user._id));
+    // setUsers(users.filter((p) => p._id !== user._id));
+    console.log(user);
   };
   const handleToggleBookmark = (status, id) => {
     const userId = users.findIndex((c) => c._id === id);
     users[userId].bookmark = !status;
-    setUsers([...users]);
+    // setUsers([...users]);
+    console.log(users);
   };
 
   const handlePageChange = (pageIndex) => {
