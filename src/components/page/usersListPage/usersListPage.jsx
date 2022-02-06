@@ -3,13 +3,14 @@ import { paginate } from "../../../utils/paginate";
 import Pagination from "../../common/pagination";
 import SearchStatus from "../../ui/searchStatus";
 import GroupList from "../../common/groupList";
-import API from "../../../api";
 import _ from "lodash";
 import UsersTable from "../../ui/usersTable";
+import { useUsers } from "../../../hooks/useUsers";
+import { useProfessions } from "../../../hooks/useProfession";
 
 function UsersListPage() {
   const pageSize = 4;
-  const [professions, setProfessions] = useState();
+  const { professions, isLoading } = useProfessions();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProf, setSelectedProf] = useState();
   const [sortBy, setSortBy] = useState({
@@ -17,21 +18,19 @@ function UsersListPage() {
     order: "asc"
   });
 
-  const [users, setUsers] = useState();
+  const { users } = useUsers();
   const [searchedUsers, setSearchedUsers] = useState();
   const [inputValue, setInputValue] = useState("");
 
-  useEffect(() => {
-    API.users.fetchAll().then((data) => setUsers(data));
-  }, []);
-
   const handleDelete = (user) => {
-    setUsers(users.filter((p) => p._id !== user._id));
+    // setUsers(users.filter((p) => p._id !== user._id));
+    console.log(user);
   };
   const handleToggleBookmark = (status, id) => {
     const userId = users.findIndex((c) => c._id === id);
     users[userId].bookmark = !status;
-    setUsers([...users]);
+    // setUsers([...users]);
+    console.log(users);
   };
 
   const handlePageChange = (pageIndex) => {
@@ -62,12 +61,6 @@ function UsersListPage() {
     setCurrentPage(1);
   }, [selectedProf, inputValue]);
 
-  useEffect(() => {
-    API.professions.fetchAll().then((data) => {
-      setProfessions(data);
-    });
-  }, []);
-
   if (users) {
     const clearFilter = () => {
       setSelectedProf();
@@ -76,10 +69,7 @@ function UsersListPage() {
     const filteredUsers =
       searchedUsers ||
       (selectedProf
-        ? users.filter(
-            (user) =>
-              JSON.stringify(user.profession) === JSON.stringify(selectedProf)
-          )
+        ? users.filter((user) => user.profession === selectedProf._id)
         : users);
 
     const count = filteredUsers.length;
@@ -88,7 +78,7 @@ function UsersListPage() {
 
     return (
       <div className="d-flex">
-        {professions && (
+        {!isLoading ? (
           <div className="d-flex flex-column flex-shrink-0 p-3">
             <GroupList
               items={professions}
@@ -99,6 +89,8 @@ function UsersListPage() {
               Очистить
             </button>
           </div>
+        ) : (
+          <p>Loading profession list...</p>
         )}
         <div className="d-flex flex-column">
           <SearchStatus users={filteredUsers} />
