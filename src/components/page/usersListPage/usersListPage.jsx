@@ -40,7 +40,6 @@ function UsersListPage() {
   const handleProfessionSelect = (item) => {
     setSearchedUsers(undefined);
     setInputValue("");
-    console.log(item);
     setSelectedProf(item);
   };
   const handleSort = (item) => {
