@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import TextField from "../common/form/textFields";
 import { validator } from "../../utils/validator";
-import API from "../../api";
 import SelectField from "../common/form/selectField";
 import RadioField from "../common/form/radioField";
 import MultiSelectField from "../common/form/multiSelectField";
 import CheckBoxForm from "../common/form/checkBoxField";
+import { useQualities } from "../../hooks/useQualities";
+import { useProfessions } from "../../hooks/useProfession";
 
 const RegisterForm = () => {
   const [data, setData] = useState({
@@ -17,17 +18,9 @@ const RegisterForm = () => {
     license: false
   });
   const [errors, setErrors] = useState({});
-  const [professions, setProfessions] = useState();
-  const [qualities, setQualities] = useState({});
-
-  useEffect(() => {
-    API.professions.fetchAll().then((data) => {
-      setProfessions(data);
-    });
-    API.qualities.fetchAll().then((data) => {
-      setQualities(data);
-    });
-  }, []);
+  const { professions } = useProfessions();
+  const { qualities, isLoading } = useQualities();
+  const qualitiesObject = { ...qualities };
 
   const validatorConfig = {
     email: {
@@ -94,18 +87,22 @@ const RegisterForm = () => {
         label="Password"
         error={errors.password}
       />
-      <SelectField
-        onChange={handleChange}
-        name="professions"
-        error={errors.profession}
-        options={professions}
-        label="Выберете вашу профессию"
-        defaultOption="Choose..."
-        value={data.profession}
-      />
+      {isLoading ? (
+        <SelectField
+          onChange={handleChange}
+          name="professions"
+          error={errors.profession}
+          options={professions}
+          label="Выберете вашу профессию"
+          defaultOption="Choose..."
+          value={data.profession}
+        />
+      ) : (
+        <h5>Loading...</h5>
+      )}
       <MultiSelectField
         defaultValue={data.qualities}
-        options={qualities}
+        options={qualitiesObject}
         onChange={handleChange}
         name="qualities"
         label="Выберете ваши качества"

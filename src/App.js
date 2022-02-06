@@ -7,6 +7,7 @@ import NavBar from "./components/ui/navBar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PropfessionProvider } from "./hooks/useProfession";
+import { QualitiesProvider } from "./hooks/useQualities";
 
 const App = () => {
   return (
@@ -14,8 +15,10 @@ const App = () => {
       <NavBar />
       <Switch>
         <PropfessionProvider>
-          <Route path="/users/:userId?/:edit?" component={Users} />
-          <Route path="/login/:type?" component={Login} />
+          <QualitiesProvider>
+            <Route path="/users/:userId?/:edit?" component={Users} />
+            <Route path="/login/:type?" component={Login} />
+          </QualitiesProvider>
         </PropfessionProvider>
         <Route path="/" exact component={Main} />
         <Redirect to="/" />
