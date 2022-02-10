@@ -18,10 +18,10 @@ const App = () => {
           <QualitiesProvider>
             <Route path="/users/:userId?/:edit?" component={Users} />
             <Route path="/login/:type?" component={Login} />
+            <Route path="/" exact component={Main} />
+            <Redirect to="/" />
           </QualitiesProvider>
         </PropfessionProvider>
-        <Route path="/" exact component={Main} />
-        <Redirect to="/" />
       </Switch>
       <ToastContainer />
     </div>
