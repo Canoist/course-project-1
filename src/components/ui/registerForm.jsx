@@ -18,8 +18,8 @@ const RegisterForm = () => {
     license: false
   });
   const [errors, setErrors] = useState({});
-  const { professions } = useProfessions();
-  const { qualities, isLoading } = useQualities();
+  const { professions, isLoading: isLoadProf } = useProfessions();
+  const { qualities, isLoading: isLoadQual } = useQualities();
   const qualitiesObject = { ...qualities };
 
   const validatorConfig = {
@@ -61,6 +61,7 @@ const RegisterForm = () => {
 
   const handleChange = (target) => {
     setData((prev) => ({ ...prev, [target.name]: target.value }));
+    console.log(data);
   };
 
   const handleSubmit = (e) => {
@@ -69,6 +70,11 @@ const RegisterForm = () => {
     if (!isValid) return;
     console.log(data);
   };
+
+  const professionsList = Object.keys(professions).map((prof) => ({
+    name: professions[prof].name,
+    value: professions[prof]._id
+  }));
 
   return (
     <form onSubmit={handleSubmit}>
@@ -87,12 +93,12 @@ const RegisterForm = () => {
         label="Password"
         error={errors.password}
       />
-      {isLoading ? (
+      {!isLoadProf ? (
         <SelectField
           onChange={handleChange}
           name="professions"
           error={errors.profession}
-          options={professions}
+          options={professionsList}
           label="Выберете вашу профессию"
           defaultOption="Choose..."
           value={data.profession}
@@ -100,13 +106,17 @@ const RegisterForm = () => {
       ) : (
         <h5>Loading...</h5>
       )}
-      <MultiSelectField
-        defaultValue={data.qualities}
-        options={qualitiesObject}
-        onChange={handleChange}
-        name="qualities"
-        label="Выберете ваши качества"
-      />
+      {!isLoadQual ? (
+        <MultiSelectField
+          defaultValue={data.qualities}
+          options={qualitiesObject}
+          onChange={handleChange}
+          name="qualities"
+          label="Выберете ваши качества"
+        />
+      ) : (
+        <h5>Loading...</h5>
+      )}
       <RadioField
         options={[
           { name: "Male", value: "male" },
