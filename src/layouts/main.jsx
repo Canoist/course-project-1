@@ -7,7 +7,7 @@ const Main = () => {
   return (
     <div className="container mt-5">
       <h1>Main Page</h1>
-      <h3>Initialisation data at FireBase</h3>
+      <h3>Initialisation data to FireBase.com</h3>
       <button
         className={"btn btn-primary " + (status === "Ready" && "disabled")}
         onClick={initialize}

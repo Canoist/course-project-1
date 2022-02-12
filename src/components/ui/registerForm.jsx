@@ -7,6 +7,7 @@ import MultiSelectField from "../common/form/multiSelectField";
 import CheckBoxForm from "../common/form/checkBoxField";
 import { useQualities } from "../../hooks/useQualities";
 import { useProfessions } from "../../hooks/useProfession";
+import { useAuth } from "../../hooks/useAuth";
 
 const RegisterForm = () => {
   const [data, setData] = useState({
@@ -20,6 +21,8 @@ const RegisterForm = () => {
   const [errors, setErrors] = useState({});
   const { professions, isLoading: isLoadProf } = useProfessions();
   const { qualities, isLoading: isLoadQual } = useQualities();
+  const { signUp } = useAuth();
+
   const qualitiesObject = { ...qualities };
 
   const validatorConfig = {
@@ -61,14 +64,18 @@ const RegisterForm = () => {
 
   const handleChange = (target) => {
     setData((prev) => ({ ...prev, [target.name]: target.value }));
-    console.log(data);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return;
-    console.log(data);
+    const newData = {
+      ...data,
+      qualities: data.qualities.map((q) => q.value)
+    };
+    console.log(newData);
+    signUp(newData);
   };
 
   const professionsList = Object.keys(professions).map((prof) => ({
@@ -96,7 +103,7 @@ const RegisterForm = () => {
       {!isLoadProf ? (
         <SelectField
           onChange={handleChange}
-          name="professions"
+          name="profession"
           error={errors.profession}
           options={professionsList}
           label="Выберете вашу профессию"
