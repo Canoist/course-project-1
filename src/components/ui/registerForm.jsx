@@ -7,8 +7,12 @@ import MultiSelectField from "../common/form/multiSelectField";
 import CheckBoxForm from "../common/form/checkBoxField";
 import { useQualities } from "../../hooks/useQualities";
 import { useProfessions } from "../../hooks/useProfession";
+import { useAuth } from "../../hooks/useAuth";
+import { useHistory } from "react-router-dom";
 
 const RegisterForm = () => {
+  const history = useHistory();
+
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -18,8 +22,10 @@ const RegisterForm = () => {
     license: false
   });
   const [errors, setErrors] = useState({});
-  const { professions } = useProfessions();
-  const { qualities, isLoading } = useQualities();
+  const { professions, isLoading: isLoadProf } = useProfessions();
+  const { qualities, isLoading: isLoadQual } = useQualities();
+  const { signUp } = useAuth();
+
   const qualitiesObject = { ...qualities };
 
   const validatorConfig = {
@@ -63,12 +69,26 @@ const RegisterForm = () => {
     setData((prev) => ({ ...prev, [target.name]: target.value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return;
-    console.log(data);
+    const newData = {
+      ...data,
+      qualities: data.qualities.map((q) => q.value)
+    };
+    try {
+      await signUp(newData);
+      history.push("/");
+    } catch (error) {
+      setErrors(error);
+    }
   };
+
+  const professionsList = Object.keys(professions).map((prof) => ({
+    name: professions[prof].name,
+    value: professions[prof]._id
+  }));
 
   return (
     <form onSubmit={handleSubmit}>
@@ -87,12 +107,12 @@ const RegisterForm = () => {
         label="Password"
         error={errors.password}
       />
-      {isLoading ? (
+      {!isLoadProf ? (
         <SelectField
           onChange={handleChange}
-          name="professions"
+          name="profession"
           error={errors.profession}
-          options={professions}
+          options={professionsList}
           label="Выберете вашу профессию"
           defaultOption="Choose..."
           value={data.profession}
@@ -100,13 +120,17 @@ const RegisterForm = () => {
       ) : (
         <h5>Loading...</h5>
       )}
-      <MultiSelectField
-        defaultValue={data.qualities}
-        options={qualitiesObject}
-        onChange={handleChange}
-        name="qualities"
-        label="Выберете ваши качества"
-      />
+      {!isLoadQual ? (
+        <MultiSelectField
+          defaultValue={data.qualities}
+          options={qualitiesObject}
+          onChange={handleChange}
+          name="qualities"
+          label="Выберете ваши качества"
+        />
+      ) : (
+        <h5>Loading...</h5>
+      )}
       <RadioField
         options={[
           { name: "Male", value: "male" },
