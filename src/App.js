@@ -15,16 +15,16 @@ const App = () => {
     <div style={{ marginLeft: 40 + "px" }}>
       <AuthProvider>
         <NavBar />
-        <Switch>
-          <PropfessionProvider>
-            <QualitiesProvider>
+        <PropfessionProvider>
+          <QualitiesProvider>
+            <Switch>
               <Route path="/users/:userId?/:edit?" component={Users} />
               <Route path="/login/:type?" component={Login} />
               <Route path="/" exact component={Main} />
               <Redirect to="/" />
-            </QualitiesProvider>
-          </PropfessionProvider>
-        </Switch>
+            </Switch>
+          </QualitiesProvider>
+        </PropfessionProvider>
       </AuthProvider>
       <ToastContainer />
     </div>
