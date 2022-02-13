@@ -17,7 +17,6 @@ const AuthProvider = ({ children }) => {
 
   async function signUp({ email, password, ...rest }) {
     const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`;
-
     try {
       const { data } = await axios.post(url, {
         email,
@@ -48,6 +47,33 @@ const AuthProvider = ({ children }) => {
     }
   }
 
+  async function signIn({ email, password }) {
+    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_KEY}`;
+    try {
+      const { data } = await axios.post(url, {
+        email,
+        password,
+        returnSecureToken: true
+      });
+      if (data.registered) {
+        toast.success(`Welcome ${data.email}!`);
+      }
+    } catch (error) {
+      errorCatcher(error);
+      console.log(error);
+      const { code, message } = error.response.data.error;
+      if (code === 400) {
+        if (message === "INVALID_PASSWORD" || message === "EMAIL_NOT_FOUND") {
+          const errorObject = {
+            email: "Неверно введен пароль или E-mail",
+            password: "Неверно введен пароль или E-mail"
+          };
+          throw errorObject;
+        }
+      }
+    }
+  }
+
   function errorCatcher(error) {
     const message = error.response.data;
     setError(message);
@@ -61,7 +87,7 @@ const AuthProvider = ({ children }) => {
   }, [error]);
 
   return (
-    <AuthContext.Provider value={{ signUp, currentUser }}>
+    <AuthContext.Provider value={{ signUp, currentUser, signIn }}>
       {children}
     </AuthContext.Provider>
   );
