@@ -1,18 +1,37 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import NavProfile from "./navProfile";
 
 const NavBar = () => {
+  const { currentUser } = useAuth();
   return (
-    <nav className="nav nav-tabs mb-4 mt-2">
-      <Link className="nav-link" to="/">
-        Main
-      </Link>
-      <Link className="nav-link" to="/login">
-        Login
-      </Link>
-      <Link className="nav-link" to="/users">
-        Users
-      </Link>
+    <nav className="navbar bg-light me-2">
+      <div className="container-fluid">
+        <ul className="nav nav-tabs">
+          <li className="nav-item">
+            <Link className="nav-link" aria-current="page" to="/">
+              Main
+            </Link>
+          </li>
+          {currentUser && (
+            <li className="nav-item">
+              <Link className="nav-link" aria-current="page" to="/users">
+                Users
+              </Link>
+            </li>
+          )}
+        </ul>
+        {currentUser ? (
+          <div className="d-flex">
+            <NavProfile />
+          </div>
+        ) : (
+          <Link className="nav-link" aria-current="page" to="/login">
+            Login
+          </Link>
+        )}
+      </div>
     </nav>
   );
 };

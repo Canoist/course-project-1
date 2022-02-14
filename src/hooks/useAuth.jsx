@@ -20,7 +20,7 @@ export const useAuth = () => {
 
 const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
-  const [currentUser, setCurrentUser] = useState({});
+  const [currentUser, setCurrentUser] = useState();
 
   function randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);

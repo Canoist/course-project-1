@@ -12,7 +12,7 @@ import AuthProvider from "./hooks/useAuth";
 
 const App = () => {
   return (
-    <div style={{ marginLeft: 40 + "px" }}>
+    <div className="mx-4">
       <AuthProvider>
         <NavBar />
         <PropfessionProvider>
