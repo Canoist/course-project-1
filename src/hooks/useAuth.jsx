@@ -82,8 +82,19 @@ const AuthProvider = ({ children }) => {
       if (code === 400) {
         if (message === "INVALID_PASSWORD" || message === "EMAIL_NOT_FOUND") {
           const errorObject = {
-            email: "Неверно введен пароль или E-mail",
-            password: "Неверно введен пароль или E-mail"
+            email: "Неверно введен пароль или E-mail"
+          };
+          throw errorObject;
+        }
+        if (message.includes("TOO_MANY_ATTEMPTS_TRY_LATER")) {
+          const errorObject = {
+            email: "Слишком много попыток входа. Попробуйте позже"
+          };
+          throw errorObject;
+        } else {
+          const errorObject = {
+            email:
+              "Неизвестная ошибка. Обратитесь, пожалуйста, в техническую поддержку.(Status code: 400)"
           };
           throw errorObject;
         }
