@@ -16,6 +16,7 @@ const RegisterForm = () => {
   const [data, setData] = useState({
     email: "",
     password: "",
+    name: "",
     profession: "",
     sex: "male",
     qualities: [],
@@ -32,6 +33,13 @@ const RegisterForm = () => {
     email: {
       isRequired: { message: "Электронная почта обязательна для заполнения" },
       isEmail: { message: "Email введен некорректно" }
+    },
+    name: {
+      isRequired: { message: "Имя обязательно для заполнения" },
+      minLength: {
+        message: "Имя должно быть не менее 2 символов",
+        value: 2
+      }
     },
     password: {
       isRequired: { message: "Пароль обязателен для заполнения" },
@@ -96,7 +104,7 @@ const RegisterForm = () => {
         name="email"
         value={data.email}
         onChange={handleChange}
-        label="E-mail"
+        label="Электронная почта"
         error={errors.email}
       />
       <TextField
@@ -104,8 +112,15 @@ const RegisterForm = () => {
         value={data.password}
         onChange={handleChange}
         type="password"
-        label="Password"
+        label="Пароль"
         error={errors.password}
+      />
+      <TextField
+        name="name"
+        value={data.name}
+        onChange={handleChange}
+        label="Имя"
+        error={errors.name}
       />
       {!isLoadProf ? (
         <SelectField

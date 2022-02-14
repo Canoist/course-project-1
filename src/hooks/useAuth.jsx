@@ -3,7 +3,9 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import userService from "../services/userService";
 import { toast } from "react-toastify";
-import { setTokens } from "../services/localStorage.service";
+import localStorageService, {
+  setTokens
+} from "../services/localStorage.service";
 
 const AuthContext = React.createContext();
 
@@ -15,6 +17,10 @@ const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [currentUser, setCurrentUser] = useState({});
 
+  function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
   async function signUp({ email, password, ...rest }) {
     const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`;
     try {
@@ -24,7 +30,13 @@ const AuthProvider = ({ children }) => {
         returnSecureToken: true
       });
       setTokens(data);
-      await createUser({ _id: data.localId, email, ...rest });
+      await createUser({
+        _id: data.localId,
+        email,
+        rate: randomInt(10, 50) / 10,
+        comletedMeetings: randomInt(0, 200),
+        ...rest
+      });
     } catch (error) {
       errorCatcher(error);
       const { code, message } = error.response.data.error;
@@ -40,7 +52,8 @@ const AuthProvider = ({ children }) => {
   }
   async function createUser(data) {
     try {
-      const { content } = userService.create(data);
+      const { content } = await userService.create(data);
+      console.log(content);
       setCurrentUser(content);
     } catch (error) {
       errorCatcher(error);
@@ -55,12 +68,13 @@ const AuthProvider = ({ children }) => {
         password,
         returnSecureToken: true
       });
+      setTokens(data);
+      getUserData();
       if (data.registered) {
-        toast.success(`Welcome ${data.email}!`);
+        toast.success(`Welcome ${currentUser.name}!`);
       }
     } catch (error) {
       errorCatcher(error);
-      console.log(error);
       const { code, message } = error.response.data.error;
       if (code === 400) {
         if (message === "INVALID_PASSWORD" || message === "EMAIL_NOT_FOUND") {
@@ -78,6 +92,20 @@ const AuthProvider = ({ children }) => {
     const message = error.response.data;
     setError(message);
   }
+
+  async function getUserData() {
+    try {
+      const { content } = await userService.getCurrentUser();
+      setCurrentUser(content);
+    } catch (error) {
+      errorCatcher(error);
+    }
+  }
+  useEffect(() => {
+    if (localStorageService.getAccessToken()) {
+      getUserData();
+    }
+  }, []);
 
   useEffect(() => {
     if (error !== null) {
