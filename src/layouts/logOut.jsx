@@ -1,6 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useAuth } from "../hooks/useAuth";
 
 const LogOut = () => {
-  return <div>ddd</div>;
+  const { logOut } = useAuth();
+  useEffect(() => {
+    logOut();
+  }, []);
+  return (
+    <div>
+      <h1>ddd</h1>
+    </div>
+  );
 };
+
 export default LogOut;
