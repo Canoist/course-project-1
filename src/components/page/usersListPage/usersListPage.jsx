@@ -10,7 +10,7 @@ import { useProfessions } from "../../../hooks/useProfession";
 
 function UsersListPage() {
   const pageSize = 4;
-  const { professions, isLoading } = useProfessions();
+  const { professions, isLoading: professionsLoading } = useProfessions();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProf, setSelectedProf] = useState();
   const [sortBy, setSortBy] = useState({
@@ -22,10 +22,6 @@ function UsersListPage() {
   const [searchedUsers, setSearchedUsers] = useState();
   const [inputValue, setInputValue] = useState("");
 
-  const handleDelete = (user) => {
-    // setUsers(users.filter((p) => p._id !== user._id));
-    console.log(user);
-  };
   const handleToggleBookmark = (status, id) => {
     const userId = users.findIndex((c) => c._id === id);
     users[userId].bookmark = !status;
@@ -78,7 +74,7 @@ function UsersListPage() {
 
     return (
       <div className="d-flex">
-        {!isLoading ? (
+        {!professionsLoading && professions ? (
           <div className="d-flex flex-column flex-shrink-0 p-3">
             <GroupList
               items={professions}
@@ -104,7 +100,6 @@ function UsersListPage() {
           {users.length > 0 && (
             <UsersTable
               users={userCrop}
-              onDelete={handleDelete}
               toggleBookmark={handleToggleBookmark}
               onSort={handleSort}
               selectedSort={sortBy}

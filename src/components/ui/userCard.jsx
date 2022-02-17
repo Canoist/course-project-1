@@ -1,7 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useAuth } from "../../hooks/useAuth";
 
 const UserCard = ({ name, profession, rate, onClick }) => {
+  const { currentUser } = useAuth();
+
   return (
     <div className="card mb-3">
       <div className="card-body">
@@ -13,11 +16,7 @@ const UserCard = ({ name, profession, rate, onClick }) => {
         </button>
         <div className="d-flex flex-column align-items-center text-center position-relative">
           <img
-            src={`https://avatars.dicebear.com/api/avataaars/${(
-              Math.random() + 1
-            )
-              .toString(36)
-              .substring(7)}.svg`}
+            src={currentUser.image}
             className="rounded-circle shadow-1-strong me-3"
             alt="avatar"
             width="65"

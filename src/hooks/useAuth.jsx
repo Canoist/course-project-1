@@ -42,7 +42,10 @@ const AuthProvider = ({ children }) => {
         _id: data.localId,
         email,
         rate: randomInt(10, 50) / 10,
-        comletedMeetings: randomInt(0, 200),
+        completedMeetings: randomInt(0, 200),
+        image: `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
+          .toString(36)
+          .substring(7)}.svg`,
         ...rest
       });
     } catch (error) {
@@ -65,8 +68,6 @@ const AuthProvider = ({ children }) => {
       setCurrentUser(content);
     } catch (error) {
       errorCatcher(error);
-    } finally {
-      setIsLoading(false);
     }
   }
 
@@ -119,6 +120,8 @@ const AuthProvider = ({ children }) => {
       setCurrentUser(content);
     } catch (error) {
       errorCatcher(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
