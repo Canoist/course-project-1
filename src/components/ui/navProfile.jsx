@@ -10,7 +10,7 @@ const NavProfile = () => {
   };
 
   return (
-    <div className="dropdown">
+    <div className="dropdown mx-5">
       <div
         className="btn dropdown-toggle d-flex align-items-center"
         onClick={toggleMenu}
