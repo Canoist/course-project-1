@@ -21,6 +21,7 @@ export const useAuth = () => {
 const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [currentUser, setCurrentUser] = useState();
+  const [isLoading, setIsLoading] = useState(true);
 
   function randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
@@ -61,6 +62,8 @@ const AuthProvider = ({ children }) => {
       setCurrentUser(content);
     } catch (error) {
       errorCatcher(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -72,7 +75,7 @@ const AuthProvider = ({ children }) => {
         returnSecureToken: true
       });
       setTokens(data);
-      getUserData();
+      await getUserData();
       if (data.registered) {
         toast.success(`Sign in with ${data.email}!`);
       }
@@ -118,6 +121,8 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (localStorageService.getAccessToken()) {
       getUserData();
+    } else {
+      setIsLoading(false);
     }
   }, []);
 
@@ -130,7 +135,7 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ signUp, currentUser, signIn }}>
-      {children}
+      {!isLoading ? children : "Loading..."}
     </AuthContext.Provider>
   );
 };
