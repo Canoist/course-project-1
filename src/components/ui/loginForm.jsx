@@ -40,6 +40,7 @@ const LoginForm = () => {
     if (!isValid) return;
     try {
       await signIn(data);
+      console.log(history.location.state.from.pathname);
       history.push(
         history.location.state ? history.location.state.from.pathname : "/"
       );

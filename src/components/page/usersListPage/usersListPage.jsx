@@ -7,6 +7,7 @@ import _ from "lodash";
 import UsersTable from "../../ui/usersTable";
 import { useUsers } from "../../../hooks/useUsers";
 import { useProfessions } from "../../../hooks/useProfession";
+import { useAuth } from "../../../hooks/useAuth";
 
 function UsersListPage() {
   const pageSize = 4;
@@ -19,6 +20,7 @@ function UsersListPage() {
   });
 
   const { users } = useUsers();
+  const { currentUser } = useAuth();
   const [searchedUsers, setSearchedUsers] = useState();
   const [inputValue, setInputValue] = useState("");
 
@@ -62,12 +64,16 @@ function UsersListPage() {
       setSelectedProf();
     };
 
-    const filteredUsers =
-      searchedUsers ||
-      (selectedProf
-        ? users.filter((user) => user.profession === selectedProf._id)
-        : users);
+    function filterUsers(data) {
+      const filteredUsers =
+        searchedUsers ||
+        (selectedProf
+          ? data.filter((user) => user.profession === selectedProf._id)
+          : data);
+      return filteredUsers.filter((user) => user._id !== currentUser._id);
+    }
 
+    const filteredUsers = filterUsers(users);
     const count = filteredUsers.length;
     const sortedUsers = _.orderBy(filteredUsers, sortBy.path, sortBy.order);
     const userCrop = paginate(sortedUsers, currentPage, pageSize);
