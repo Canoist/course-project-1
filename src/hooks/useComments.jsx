@@ -62,8 +62,21 @@ export const CommentsProvider = ({ children }) => {
     }
   }
 
+  async function removeComment(id) {
+    try {
+      const { content } = await commentService.removeComment(id);
+      if (content === null) {
+        setComments((prev) => prev.filter((c) => c._id !== id));
+      }
+    } catch (error) {
+      errorCatcher(error);
+    }
+  }
+
   return (
-    <CommentsContext.Provider value={{ comments, createComment, isLoading }}>
+    <CommentsContext.Provider
+      value={{ comments, createComment, isLoading, removeComment }}
+    >
       {children}
     </CommentsContext.Provider>
   );
