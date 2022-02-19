@@ -64,7 +64,6 @@ const AuthProvider = ({ children }) => {
   async function createUser(data) {
     try {
       const { content } = await userService.create(data);
-      console.log(content);
       setCurrentUser(content);
     } catch (error) {
       errorCatcher(error);
@@ -80,9 +79,6 @@ const AuthProvider = ({ children }) => {
       });
       setTokens(data);
       await getUserData();
-      if (data.registered) {
-        toast.success(`Sign in with ${data.email}!`);
-      }
     } catch (error) {
       errorCatcher(error);
       const { code, message } = error.response.data.error;
