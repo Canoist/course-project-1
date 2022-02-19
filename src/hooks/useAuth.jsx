@@ -121,6 +121,15 @@ const AuthProvider = ({ children }) => {
     }
   }
 
+  async function updateUser(data) {
+    try {
+      const { content } = await userService.create(data);
+      setCurrentUser(content);
+    } catch (error) {
+      errorCatcher(error);
+    }
+  }
+
   function logOut() {
     localStorageService.removeAuthData();
     setCurrentUser(null);
@@ -143,7 +152,9 @@ const AuthProvider = ({ children }) => {
   }, [error]);
 
   return (
-    <AuthContext.Provider value={{ signUp, currentUser, signIn, logOut }}>
+    <AuthContext.Provider
+      value={{ signUp, currentUser, signIn, logOut, updateUser }}
+    >
       {!isLoading ? children : "Loading..."}
     </AuthContext.Provider>
   );

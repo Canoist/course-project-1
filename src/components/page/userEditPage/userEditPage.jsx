@@ -11,11 +11,10 @@ import { useProfessions } from "../../../hooks/useProfession";
 import { useQualities } from "../../../hooks/useQualities";
 
 const UserEditPage = ({ userId }) => {
-  const { currentUser } = useAuth();
+  const { currentUser, updateUser } = useAuth();
   const [data, setData] = useState({});
   const [errors, setErrors] = useState({});
   const history = useHistory();
-
   const {
     professions,
     getProfession,
@@ -67,8 +66,6 @@ const UserEditPage = ({ userId }) => {
         }
       }
     }
-    console.log(qualitiesObject);
-    console.log(newQualities);
     setData((prev) => ({ ...prev, qualities: newQualities }));
   };
 
@@ -76,7 +73,7 @@ const UserEditPage = ({ userId }) => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return;
-    console.log(data);
+    updateUser(data);
   };
 
   const professionsList = Object.keys(professions).map((prof) => ({
@@ -84,7 +81,10 @@ const UserEditPage = ({ userId }) => {
     value: professions[prof]._id
   }));
 
-  return currentUser ? (
+  const isLoad =
+    currentUser && !isLoadProf && !isLoadQual && getProfession(data.profession);
+
+  return isLoad ? (
     <div className="container mt-5">
       <div className="row">
         <div className="col-md-6 offset-md-3 shadow p-4">
@@ -106,29 +106,25 @@ const UserEditPage = ({ userId }) => {
               label="E-mail"
               error={errors.email}
             />
-            {!isLoadProf && (
-              <SelectField
-                onChange={handleChange}
-                name="profession"
-                error={errors.profession}
-                options={professionsList}
-                label="Выберете вашу профессию"
-                defaultOption={getProfession(data.profession).name}
-                value={getProfession(data.profession)._id}
-              />
-            )}
-            {!isLoadQual && (
-              <MultiSelectField
-                defaultValue={data.qualities.map((qualId) => ({
-                  label: getQualities(qualId).name,
-                  value: getQualities(qualId)._id
-                }))}
-                options={qualitiesObject}
-                onChange={handleChangeQualities}
-                name="qualities"
-                label="Выберете ваши качества"
-              />
-            )}
+            <SelectField
+              onChange={handleChange}
+              name="profession"
+              error={errors.profession}
+              options={professionsList}
+              label="Выберете вашу профессию"
+              defaultOption={getProfession(data.profession).name}
+              value={getProfession(data.profession)._id}
+            />
+            <MultiSelectField
+              defaultValue={data.qualities.map((qualId) => ({
+                label: getQualities(qualId).name,
+                value: getQualities(qualId)._id
+              }))}
+              options={qualitiesObject}
+              onChange={handleChangeQualities}
+              name="qualities"
+              label="Выберете ваши качества"
+            />
             <RadioField
               options={[
                 { name: "Male", value: "male" },
