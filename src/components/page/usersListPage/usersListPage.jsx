@@ -27,8 +27,6 @@ function UsersListPage() {
   const handleToggleBookmark = (status, id) => {
     const userId = users.findIndex((c) => c._id === id);
     users[userId].bookmark = !status;
-    // setUsers([...users]);
-    console.log(users);
   };
 
   const handlePageChange = (pageIndex) => {

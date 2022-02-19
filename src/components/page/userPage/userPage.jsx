@@ -8,14 +8,16 @@ import Comments from "../../ui/comments";
 import { useUsers } from "../../../hooks/useUsers";
 import { useProfessions } from "../../../hooks/useProfession";
 import { CommentsProvider } from "../../../hooks/useComments";
+import { useAuth } from "../../../hooks/useAuth";
 
 const UserPage = ({ userId }) => {
   const { getUser } = useUsers();
   const { isLoading } = useProfessions();
   const user = getUser(userId);
+  const { currentUser } = useAuth();
   const history = useHistory();
   const handleGoToEditUser = () => {
-    history.push(`/users/${userId}/edit`);
+    history.push(`/users/${currentUser._id}/edit`);
   };
 
   return !isLoading ? (
