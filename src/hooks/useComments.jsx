@@ -31,7 +31,7 @@ export const CommentsProvider = ({ children }) => {
   }, [error]);
 
   function errorCatcher(error) {
-    const message = error.response.data;
+    const { message } = error.response.data;
     setError(message);
   }
 

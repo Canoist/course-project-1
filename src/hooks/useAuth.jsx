@@ -23,7 +23,6 @@ const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [currentUser, setCurrentUser] = useState();
   const [isLoading, setIsLoading] = useState(true);
-
   const history = useHistory();
 
   function randomInt(min, max) {
@@ -125,6 +124,7 @@ const AuthProvider = ({ children }) => {
     try {
       const { content } = await userService.patch(data);
       setCurrentUser(content);
+      console.log(content);
     } catch (error) {
       errorCatcher(error);
     }

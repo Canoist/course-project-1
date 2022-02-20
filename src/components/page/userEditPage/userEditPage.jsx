@@ -73,6 +73,7 @@ const UserEditPage = () => {
     const isValid = validate();
     if (!isValid) return;
     updateUser(data);
+    console.log(data);
     history.push(`/users/${currentUser._id}`);
   };
 
