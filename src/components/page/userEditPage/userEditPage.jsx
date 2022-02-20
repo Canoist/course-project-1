@@ -4,17 +4,15 @@ import TextField from "../../common/form/textFields";
 import SelectField from "../../common/form/selectField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import RadioField from "../../common/form/radioField";
-import PropTypes from "prop-types";
-import { useHistory } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
 import { useProfessions } from "../../../hooks/useProfession";
 import { useQualities } from "../../../hooks/useQualities";
+import { useHistory } from "react-router-dom";
 
-const UserEditPage = ({ userId }) => {
+const UserEditPage = () => {
   const { currentUser, updateUser } = useAuth();
   const [data, setData] = useState({});
   const [errors, setErrors] = useState({});
-  const history = useHistory();
   const {
     professions,
     getProfession,
@@ -22,6 +20,7 @@ const UserEditPage = ({ userId }) => {
   } = useProfessions();
   const { qualities, isLoading: isLoadQual, getQualities } = useQualities();
   const qualitiesObject = { ...qualities };
+  const history = useHistory();
 
   useEffect(() => {
     setData({
@@ -74,6 +73,7 @@ const UserEditPage = ({ userId }) => {
     const isValid = validate();
     if (!isValid) return;
     updateUser(data);
+    history.push(`/users/${currentUser._id}`);
   };
 
   const professionsList = Object.keys(professions).map((prof) => ({
@@ -93,7 +93,7 @@ const UserEditPage = ({ userId }) => {
             {" "}
             <TextField
               name="name"
-              value={currentUser.name}
+              value={data.name}
               onChange={handleChange}
               type="name"
               label="Имя"
@@ -101,7 +101,7 @@ const UserEditPage = ({ userId }) => {
             />
             <TextField
               name="email"
-              value={currentUser.email}
+              value={data.email}
               onChange={handleChange}
               label="E-mail"
               error={errors.email}
@@ -149,20 +149,8 @@ const UserEditPage = ({ userId }) => {
       </div>
     </div>
   ) : (
-    <div className="container mt-5">
-      <h1>Эта страница находится в разработке</h1>
-      <button
-        className="btn btn-primary w-100 mx-auto"
-        onClick={() => history.push(`/users/${userId}`)}
-      >
-        Вернуться к просмотру пользователя
-      </button>
-    </div>
+    <h1>...Loading</h1>
   );
-};
-
-UserEditPage.propTypes = {
-  userId: PropTypes.string.isRequired
 };
 
 export default UserEditPage;
