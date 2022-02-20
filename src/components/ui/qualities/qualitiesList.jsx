@@ -13,7 +13,7 @@ const QualitiesList = ({ qualitiesId }) => {
       ))}
     </>
   ) : (
-    <h3>Loading...</h3>
+    <>Loading...</>
   );
 };
 

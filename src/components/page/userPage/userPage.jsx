@@ -7,31 +7,31 @@ import MeetingsCard from "../../ui/mettingsCard";
 import Comments from "../../ui/comments";
 import { useUsers } from "../../../hooks/useUsers";
 import { useProfessions } from "../../../hooks/useProfession";
+import { CommentsProvider } from "../../../hooks/useComments";
+import { useAuth } from "../../../hooks/useAuth";
 
 const UserPage = ({ userId }) => {
   const { getUser } = useUsers();
-  const { getProfession, isLoading } = useProfessions();
+  const { isLoading } = useProfessions();
   const user = getUser(userId);
+  const { currentUser } = useAuth();
   const history = useHistory();
   const handleGoToEditUser = () => {
-    history.push(`/users/${userId}/edit`);
+    history.push(`/users/${currentUser._id}/edit`);
   };
 
   return !isLoading ? (
     <div className="container">
       <div className="row gutters-sm">
         <div className="col-md-4 mb-3">
-          <UserCard
-            name={user.name}
-            profession={getProfession(user.profession).name}
-            rate={user.rate}
-            onClick={handleGoToEditUser}
-          />
+          <UserCard user={user} onClick={handleGoToEditUser} />
           <QualitiesCard qualities={user.qualities} />
           <MeetingsCard meets={user.completedMeetings} />
         </div>
         <div className="col-md-8">
-          <Comments />
+          <CommentsProvider>
+            <Comments />
+          </CommentsProvider>
         </div>
       </div>
     </div>

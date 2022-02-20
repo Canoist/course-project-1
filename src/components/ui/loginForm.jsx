@@ -9,25 +9,20 @@ const LoginForm = () => {
   const history = useHistory();
   const [data, setData] = useState({ email: "", password: "", stayOn: false });
   const [errors, setErrors] = useState({});
+  const [enterError, setEnterError] = useState(null);
+
   const { signIn } = useAuth();
 
   const validatorConfig = {
     email: {
-      isRequired: { message: "Электронная почта обязательна для заполнения" },
-      isEmail: { message: "Email введен некорректно" }
+      isRequired: { message: "Электронная почта обязательна для заполнения" }
     },
     password: {
-      isRequired: { message: "Пароль обязателен для заполнения" },
-      isContainCapital: {
-        message: "Пароль должен содержать хотя бы одну заглавную букву"
-      },
-      isContainDigit: { message: "Пароль должен содержать хотя бы одну цифру" },
-      minLength: {
-        message: "Длина пароля должна быть не менее 7 символов",
-        value: 7
-      }
+      isRequired: { message: "Пароль обязателен для заполнения" }
     }
   };
+
+  const isValid = Object.keys(errors).length === 0;
 
   useEffect(() => {
     validate();
@@ -41,6 +36,7 @@ const LoginForm = () => {
 
   const handleChange = (target) => {
     setData((prev) => ({ ...prev, [target.name]: target.value }));
+    setEnterError(null);
   };
 
   const handleSubmit = async (e) => {
@@ -49,9 +45,11 @@ const LoginForm = () => {
     if (!isValid) return;
     try {
       await signIn(data);
-      history.push("/");
+      history.push(
+        history.location.state ? history.location.state.from.pathname : "/"
+      );
     } catch (error) {
-      setErrors(error);
+      setEnterError(error.message);
     }
   };
 
@@ -75,10 +73,12 @@ const LoginForm = () => {
       <CheckBoxForm onChange={handleChange} name="stayOn" value={data.stayOn}>
         Оставаться в системе
       </CheckBoxForm>
+      {enterError && <p className="text-danger">{enterError}</p>}
+
       <button
         className="btn btn-primary w-100 mx-auto"
         type="submit"
-        disabled={Object.keys(errors).length !== 0}
+        disabled={!isValid || enterError}
       >
         Submit
       </button>

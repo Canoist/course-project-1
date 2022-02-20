@@ -3,7 +3,15 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import userService from "../services/userService";
 import { toast } from "react-toastify";
-import { setTokens } from "../services/localStorage.service";
+import localStorageService, {
+  setTokens
+} from "../services/localStorage.service";
+import { useHistory } from "react-router-dom";
+
+export const httpAuth = axios.create({
+  baseURL: "https://identitytoolkit.googleapis.com/v1/",
+  params: { key: process.env.REACT_APP_FIREBASE_KEY }
+});
 
 const AuthContext = React.createContext();
 
@@ -13,18 +21,33 @@ export const useAuth = () => {
 
 const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
-  const [currentUser, setCurrentUser] = useState({});
+  const [currentUser, setCurrentUser] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const history = useHistory();
+
+  function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
 
   async function signUp({ email, password, ...rest }) {
-    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`;
     try {
-      const { data } = await axios.post(url, {
+      const { data } = await httpAuth.post("accounts:signUp", {
         email,
         password,
         returnSecureToken: true
       });
       setTokens(data);
-      await createUser({ _id: data.localId, email, ...rest });
+      await createUser({
+        _id: data.localId,
+        email,
+        rate: randomInt(10, 50) / 10,
+        completedMeetings: randomInt(0, 200),
+        image: `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
+          .toString(36)
+          .substring(7)}.svg`,
+        ...rest
+      });
     } catch (error) {
       errorCatcher(error);
       const { code, message } = error.response.data.error;
@@ -40,7 +63,7 @@ const AuthProvider = ({ children }) => {
   }
   async function createUser(data) {
     try {
-      const { content } = userService.create(data);
+      const { content } = await userService.create(data);
       setCurrentUser(content);
     } catch (error) {
       errorCatcher(error);
@@ -48,25 +71,33 @@ const AuthProvider = ({ children }) => {
   }
 
   async function signIn({ email, password }) {
-    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_KEY}`;
     try {
-      const { data } = await axios.post(url, {
+      const { data } = await httpAuth.post("accounts:signInWithPassword", {
         email,
         password,
         returnSecureToken: true
       });
-      if (data.registered) {
-        toast.success(`Welcome ${data.email}!`);
-      }
+      setTokens(data);
+      await getUserData();
     } catch (error) {
       errorCatcher(error);
-      console.log(error);
       const { code, message } = error.response.data.error;
       if (code === 400) {
         if (message === "INVALID_PASSWORD" || message === "EMAIL_NOT_FOUND") {
           const errorObject = {
-            email: "Неверно введен пароль или E-mail",
-            password: "Неверно введен пароль или E-mail"
+            email: "Неверно введен пароль или E-mail"
+          };
+          throw errorObject;
+        }
+        if (message.includes("TOO_MANY_ATTEMPTS_TRY_LATER")) {
+          const errorObject = {
+            email: "Слишком много попыток входа. Попробуйте позже"
+          };
+          throw errorObject;
+        } else {
+          const errorObject = {
+            email:
+              "Неизвестная ошибка. Обратитесь, пожалуйста, в техническую поддержку.(Status code: 400)"
           };
           throw errorObject;
         }
@@ -79,6 +110,40 @@ const AuthProvider = ({ children }) => {
     setError(message);
   }
 
+  async function getUserData() {
+    try {
+      const { content } = await userService.getCurrentUser();
+      setCurrentUser(content);
+    } catch (error) {
+      errorCatcher(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function updateUser(data) {
+    try {
+      const { content } = await userService.patch(data);
+      setCurrentUser(content);
+    } catch (error) {
+      errorCatcher(error);
+    }
+  }
+
+  function logOut() {
+    localStorageService.removeAuthData();
+    setCurrentUser(null);
+    history.push("/");
+  }
+
+  useEffect(() => {
+    if (localStorageService.getAccessToken()) {
+      getUserData();
+    } else {
+      setIsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (error !== null) {
       toast(error);
@@ -87,8 +152,10 @@ const AuthProvider = ({ children }) => {
   }, [error]);
 
   return (
-    <AuthContext.Provider value={{ signUp, currentUser, signIn }}>
-      {children}
+    <AuthContext.Provider
+      value={{ signUp, currentUser, signIn, logOut, updateUser }}
+    >
+      {!isLoading ? children : "Loading..."}
     </AuthContext.Provider>
   );
 };

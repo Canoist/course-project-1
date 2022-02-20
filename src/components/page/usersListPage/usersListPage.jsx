@@ -7,10 +7,11 @@ import _ from "lodash";
 import UsersTable from "../../ui/usersTable";
 import { useUsers } from "../../../hooks/useUsers";
 import { useProfessions } from "../../../hooks/useProfession";
+import { useAuth } from "../../../hooks/useAuth";
 
 function UsersListPage() {
   const pageSize = 4;
-  const { professions, isLoading } = useProfessions();
+  const { professions, isLoading: professionsLoading } = useProfessions();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProf, setSelectedProf] = useState();
   const [sortBy, setSortBy] = useState({
@@ -19,18 +20,13 @@ function UsersListPage() {
   });
 
   const { users } = useUsers();
+  const { currentUser } = useAuth();
   const [searchedUsers, setSearchedUsers] = useState();
   const [inputValue, setInputValue] = useState("");
 
-  const handleDelete = (user) => {
-    // setUsers(users.filter((p) => p._id !== user._id));
-    console.log(user);
-  };
   const handleToggleBookmark = (status, id) => {
     const userId = users.findIndex((c) => c._id === id);
     users[userId].bookmark = !status;
-    // setUsers([...users]);
-    console.log(users);
   };
 
   const handlePageChange = (pageIndex) => {
@@ -66,19 +62,23 @@ function UsersListPage() {
       setSelectedProf();
     };
 
-    const filteredUsers =
-      searchedUsers ||
-      (selectedProf
-        ? users.filter((user) => user.profession === selectedProf._id)
-        : users);
+    function filterUsers(data) {
+      const filteredUsers =
+        searchedUsers ||
+        (selectedProf
+          ? data.filter((user) => user.profession === selectedProf._id)
+          : data);
+      return filteredUsers.filter((user) => user._id !== currentUser._id);
+    }
 
+    const filteredUsers = filterUsers(users);
     const count = filteredUsers.length;
     const sortedUsers = _.orderBy(filteredUsers, sortBy.path, sortBy.order);
     const userCrop = paginate(sortedUsers, currentPage, pageSize);
 
     return (
       <div className="d-flex">
-        {!isLoading ? (
+        {!professionsLoading && professions ? (
           <div className="d-flex flex-column flex-shrink-0 p-3">
             <GroupList
               items={professions}
@@ -104,7 +104,6 @@ function UsersListPage() {
           {users.length > 0 && (
             <UsersTable
               users={userCrop}
-              onDelete={handleDelete}
               toggleBookmark={handleToggleBookmark}
               onSort={handleSort}
               selectedSort={sortBy}

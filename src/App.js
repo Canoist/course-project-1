@@ -9,17 +9,20 @@ import "react-toastify/dist/ReactToastify.css";
 import { PropfessionProvider } from "./hooks/useProfession";
 import { QualitiesProvider } from "./hooks/useQualities";
 import AuthProvider from "./hooks/useAuth";
+import ProtectedRoute from "./components/common/protectedRoute";
+import LogOut from "./layouts/logOut";
 
 const App = () => {
   return (
-    <div style={{ marginLeft: 40 + "px" }}>
+    <div className="mx-4">
       <AuthProvider>
         <NavBar />
         <PropfessionProvider>
           <QualitiesProvider>
             <Switch>
-              <Route path="/users/:userId?/:edit?" component={Users} />
+              <ProtectedRoute path="/users/:userId?/:edit?" component={Users} />
               <Route path="/login/:type?" component={Login} />
+              <Route path="/logout" component={LogOut} />
               <Route path="/" exact component={Main} />
               <Redirect to="/" />
             </Switch>
