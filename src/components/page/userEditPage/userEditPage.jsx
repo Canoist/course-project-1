@@ -24,11 +24,7 @@ const UserEditPage = () => {
 
   useEffect(() => {
     setData({
-      name: currentUser.name,
-      email: currentUser.email,
-      profession: currentUser.profession,
-      sex: currentUser.sex,
-      qualities: currentUser.qualities
+      ...currentUser
     });
   }, [currentUser]);
 
