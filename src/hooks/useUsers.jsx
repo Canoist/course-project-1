@@ -32,7 +32,6 @@ const UserProvider = ({ children }) => {
       const newUsers = [...users];
       const indexUser = newUsers.findIndex((u) => u._id === currentUser._id);
       newUsers[indexUser] = currentUser;
-      console.log(indexUser);
       setUsers(newUsers);
     }
   }, [currentUser]);

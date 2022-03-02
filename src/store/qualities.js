@@ -10,7 +10,6 @@ const qualitiesSlice = createSlice({
   },
   reducers: {
     qualitiesRequested: (state) => {
-      console.log(state);
       state.isLoading = true;
     },
     qualitiesRecieved: (state, action) => {
@@ -36,6 +35,29 @@ export const loadQualitiesList = () => async (dispatch) => {
   } catch (error) {
     dispatch(qualitiesRequestFailed(error.message));
   }
+};
+
+export function getQualities() {
+  return function (state) {
+    return state.qualities.entities;
+  };
+}
+export const getQualitiesLoadingStatus = () => (state) =>
+  state.qualities.isLoading;
+export const getQualitiesByIds = (qualitiesIds) => (state) => {
+  if (state.qualities.entities) {
+    const qualitiesArray = [];
+    for (const qualId of qualitiesIds) {
+      for (const quality of state.qualities.entities) {
+        if (qualId === quality._id) {
+          qualitiesArray.push(quality);
+          break;
+        }
+      }
+    }
+    return qualitiesArray;
+  }
+  return [];
 };
 
 export default qualitiesReducer;

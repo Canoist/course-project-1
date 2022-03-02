@@ -6,8 +6,12 @@ import MultiSelectField from "../../common/form/multiSelectField";
 import RadioField from "../../common/form/radioField";
 import { useAuth } from "../../../hooks/useAuth";
 import { useProfessions } from "../../../hooks/useProfession";
-import { useQualities } from "../../../hooks/useQualities";
 import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
+import {
+  getQualities,
+  getQualitiesLoadingStatus
+} from "../../../store/qualities";
 
 const UserEditPage = () => {
   const { currentUser, updateUser } = useAuth();
@@ -18,13 +22,15 @@ const UserEditPage = () => {
     getProfession,
     isLoading: isLoadProf
   } = useProfessions();
-  const { qualities, isLoading: isLoadQual, getQualities } = useQualities();
+  const qualities = useSelector(getQualities());
+  const isLoadQual = useSelector(getQualitiesLoadingStatus());
   const qualitiesObject = { ...qualities };
   const history = useHistory();
 
   useEffect(() => {
     setData({
-      ...currentUser
+      ...currentUser,
+      qualities: transformData(currentUser.qualities)
     });
   }, [currentUser]);
 
@@ -50,6 +56,26 @@ const UserEditPage = () => {
 
   const handleChange = (target) => {
     setData((prev) => ({ ...prev, [target.name]: target.value }));
+  };
+
+  function getQualitiesListByIds(qualitiesIds) {
+    const qualitiesArray = [];
+    for (const qualId of qualitiesIds) {
+      for (const quality of qualities) {
+        if (quality._id === qualId) {
+          qualitiesArray.push(quality);
+          break;
+        }
+      }
+    }
+    return qualitiesArray;
+  }
+  const transformData = (data) => {
+    const result = getQualitiesListByIds(data).map((qual) => ({
+      label: qual.name,
+      value: qual._id
+    }));
+    return result;
   };
 
   const handleChangeQualities = ({ value }) => {
@@ -113,10 +139,7 @@ const UserEditPage = () => {
               value={getProfession(data.profession)._id}
             />
             <MultiSelectField
-              defaultValue={data.qualities.map((qualId) => ({
-                label: getQualities(qualId).name,
-                value: getQualities(qualId)._id
-              }))}
+              defaultValue={data.qualities}
               options={qualitiesObject}
               onChange={handleChangeQualities}
               name="qualities"

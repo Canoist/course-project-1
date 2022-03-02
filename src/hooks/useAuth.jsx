@@ -124,7 +124,6 @@ const AuthProvider = ({ children }) => {
     try {
       const { content } = await userService.patch(data);
       setCurrentUser(content);
-      console.log(content);
     } catch (error) {
       errorCatcher(error);
     }
