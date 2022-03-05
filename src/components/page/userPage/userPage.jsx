@@ -6,13 +6,14 @@ import QualitiesCard from "../../ui/qualities/qualitiesCard";
 import MeetingsCard from "../../ui/mettingsCard";
 import Comments from "../../ui/comments";
 import { useUsers } from "../../../hooks/useUsers";
-import { useProfessions } from "../../../hooks/useProfession";
 import { CommentsProvider } from "../../../hooks/useComments";
 import { useAuth } from "../../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import { getProfessionsLoadingStatus } from "../../../store/professions";
 
 const UserPage = ({ userId }) => {
   const { getUser } = useUsers();
-  const { isLoading } = useProfessions();
+  const isLoading = useSelector(getProfessionsLoadingStatus());
   const user = getUser(userId);
   const { currentUser } = useAuth();
   const history = useHistory();

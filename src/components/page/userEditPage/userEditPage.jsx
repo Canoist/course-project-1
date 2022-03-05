@@ -5,23 +5,24 @@ import SelectField from "../../common/form/selectField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import RadioField from "../../common/form/radioField";
 import { useAuth } from "../../../hooks/useAuth";
-import { useProfessions } from "../../../hooks/useProfession";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
   getQualities,
   getQualitiesLoadingStatus
 } from "../../../store/qualities";
+import {
+  getProfessionById,
+  getProfessions,
+  getProfessionsLoadingStatus
+} from "../../../store/professions";
 
 const UserEditPage = () => {
   const { currentUser, updateUser } = useAuth();
   const [data, setData] = useState({});
   const [errors, setErrors] = useState({});
-  const {
-    professions,
-    getProfession,
-    isLoading: isLoadProf
-  } = useProfessions();
+  const professions = useSelector(getProfessions());
+  const isLoadProf = useSelector(getProfessionsLoadingStatus());
   const qualities = useSelector(getQualities());
   const isLoadQual = useSelector(getQualitiesLoadingStatus());
   const qualitiesObject = { ...qualities };
@@ -87,6 +88,7 @@ const UserEditPage = () => {
         }
       }
     }
+    console.log(newQualities);
     setData((prev) => ({ ...prev, qualities: newQualities }));
   };
 
@@ -104,8 +106,7 @@ const UserEditPage = () => {
     value: professions[prof]._id
   }));
 
-  const isLoad =
-    currentUser && !isLoadProf && !isLoadQual && getProfession(data.profession);
+  const isLoad = currentUser && !isLoadProf && !isLoadQual;
 
   return isLoad ? (
     <div className="container mt-5">
@@ -113,7 +114,6 @@ const UserEditPage = () => {
         <div className="col-md-6 offset-md-3 shadow p-4">
           <h3 className="mb-4">Редактирование пользователя</h3>
           <form onSubmit={handleSubmit}>
-            {" "}
             <TextField
               name="name"
               value={data.name}
@@ -135,8 +135,10 @@ const UserEditPage = () => {
               error={errors.profession}
               options={professionsList}
               label="Выберете вашу профессию"
-              defaultOption={getProfession(data.profession).name}
-              value={getProfession(data.profession)._id}
+              defaultOption={
+                useSelector(getProfessionById(data.profession)).name
+              }
+              value={useSelector(getProfessionById(data.profession))._id}
             />
             <MultiSelectField
               defaultValue={data.qualities}
