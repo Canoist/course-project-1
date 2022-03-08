@@ -12,13 +12,14 @@ import {
   getQualitiesLoadingStatus
 } from "../../../store/qualities";
 import {
-  getProfessionById,
+  // getProfessionById,
   getProfessions,
   getProfessionsLoadingStatus
 } from "../../../store/professions";
 
 const UserEditPage = () => {
   const { currentUser, updateUser } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState({});
   const [errors, setErrors] = useState({});
   const professions = useSelector(getProfessions());
@@ -27,13 +28,6 @@ const UserEditPage = () => {
   const isLoadQual = useSelector(getQualitiesLoadingStatus());
   const qualitiesObject = { ...qualities };
   const history = useHistory();
-
-  useEffect(() => {
-    setData({
-      ...currentUser,
-      qualities: transformData(currentUser.qualities)
-    });
-  }, [currentUser]);
 
   const validatorConfig = {
     name: {
@@ -47,8 +41,25 @@ const UserEditPage = () => {
 
   useEffect(() => {
     validate();
+    if (data && isLoading) {
+      setIsLoading(false);
+    }
   }, [data]);
 
+  useEffect(() => {
+    if (
+      !isLoadProf &&
+      !isLoadQual &&
+      currentUser &&
+      Object.keys(data).length === 0
+    ) {
+      setData({
+        ...currentUser,
+        qualities: transformData(currentUser.qualities)
+      });
+      console.log(professions);
+    }
+  }, [isLoadProf, isLoadQual, currentUser, data]);
   const validate = () => {
     const errors = validator(data, validatorConfig);
     setErrors(errors);
@@ -88,15 +99,17 @@ const UserEditPage = () => {
         }
       }
     }
-    console.log(newQualities);
     setData((prev) => ({ ...prev, qualities: newQualities }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return;
-    updateUser(data);
+    await updateUser({
+      ...data,
+      qualities: data.qualities.map((q) => q.value)
+    });
     console.log(data);
     history.push(`/users/${currentUser._id}`);
   };
@@ -106,7 +119,7 @@ const UserEditPage = () => {
     value: professions[prof]._id
   }));
 
-  const isLoad = currentUser && !isLoadProf && !isLoadQual;
+  const isLoad = currentUser && !isLoadProf && !isLoadQual && !isLoading;
 
   return isLoad ? (
     <div className="container mt-5">
@@ -135,10 +148,8 @@ const UserEditPage = () => {
               error={errors.profession}
               options={professionsList}
               label="Выберете вашу профессию"
-              defaultOption={
-                useSelector(getProfessionById(data.profession)).name
-              }
-              value={useSelector(getProfessionById(data.profession))._id}
+              defaultOption="Choose..."
+              value={data.profession}
             />
             <MultiSelectField
               defaultValue={data.qualities}

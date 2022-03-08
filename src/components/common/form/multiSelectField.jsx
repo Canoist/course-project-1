@@ -13,7 +13,8 @@ const MultiSelectField = ({ options, onChange, name, label, defaultValue }) => {
   const handleChange = (value) => {
     onChange({ name: name, value });
   };
-  return defaultValue ? (
+
+  return (
     <div className="mb-4">
       <label className="form-label">{label}</label>
       <Select
@@ -27,8 +28,6 @@ const MultiSelectField = ({ options, onChange, name, label, defaultValue }) => {
         name={name}
       />
     </div>
-  ) : (
-    <>Loading...</>
   );
 };
 MultiSelectField.propTypes = {
