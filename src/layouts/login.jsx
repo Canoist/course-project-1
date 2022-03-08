@@ -25,7 +25,7 @@ const Login = () => {
                 Already have account?{" "}
                 <a role="button" onClick={toggleFormType}>
                   {" "}
-                  Sign in
+                  <u>Sign in</u>
                 </a>
               </p>
             </>
@@ -37,7 +37,7 @@ const Login = () => {
                 Dont have account?{" "}
                 <a role="button" onClick={toggleFormType}>
                   {" "}
-                  Sign up
+                  <u>Sign up</u>
                 </a>
               </p>
             </>

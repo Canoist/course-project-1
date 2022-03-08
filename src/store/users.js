@@ -1,4 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAction, createSlice } from "@reduxjs/toolkit";
+import authService from "../services/authService";
+import localStorageService from "../services/localStorage.service";
 import userService from "../services/userService";
 
 const usersSlice = createSlice({
@@ -7,7 +9,9 @@ const usersSlice = createSlice({
     entities: null,
     isLoading: true,
     error: null,
-    lastFetch: null
+    lastFetch: null,
+    auth: null,
+    isLoggedIn: false
   },
   reducers: {
     usersRequested: (state) => {
@@ -21,12 +25,39 @@ const usersSlice = createSlice({
     usersRequestFailed: (state, action) => {
       state.error = action.payload;
       state.isLoading = false;
+    },
+    authRequestSuccess: (state, action) => {
+      state.auth = { ...action.payload, isLoggedIn: true };
+    },
+    authRequestFailed: (state, action) => {
+      state.error = action.payload;
     }
   }
 });
 
 const { reducer: usersReducer, actions } = usersSlice;
-const { usersRequested, usersRecieved, usersRequestFailed } = actions;
+const {
+  usersRequested,
+  usersRecieved,
+  usersRequestFailed,
+  authRequestSuccess,
+  authRequestFailed
+} = actions;
+
+const authRequested = createAction("users/authRequested");
+
+export const signUp =
+  ({ email, password, ...rest }) =>
+  async (dispatch) => {
+    dispatch(authRequested());
+    try {
+      const data = await authService.register({ email, password });
+      localStorageService.setTokens(data);
+      dispatch(authRequestSuccess({ userId: data.localId }));
+    } catch (error) {
+      dispatch(authRequestFailed(error.message));
+    }
+  };
 
 function isOutdated(date) {
   if (Date.now() - date > 10 * 60 * 1000) {
