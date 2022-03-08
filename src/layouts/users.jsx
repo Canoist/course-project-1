@@ -4,7 +4,6 @@ import UserEditPage from "../components/page/userEditPage/userEditPage";
 import UserPage from "../components/page/userPage";
 import UsersListPage from "../components/page/usersListPage";
 import { useAuth } from "../hooks/useAuth";
-import UserProvider from "../hooks/useUsers";
 const Users = () => {
   const params = useParams();
   const { userId, edit } = params;
@@ -12,21 +11,19 @@ const Users = () => {
 
   return (
     <>
-      <UserProvider>
-        {userId ? (
-          edit ? (
-            userId === currentUser._id ? (
-              <UserEditPage />
-            ) : (
-              <Redirect to={`/users/${currentUser._id}/edit`} />
-            )
+      {userId ? (
+        edit ? (
+          userId === currentUser._id ? (
+            <UserEditPage />
           ) : (
-            <UserPage userId={userId} />
+            <Redirect to={`/users/${currentUser._id}/edit`} />
           )
         ) : (
-          <UsersListPage />
-        )}
-      </UserProvider>
+          <UserPage userId={userId} />
+        )
+      ) : (
+        <UsersListPage />
+      )}
     </>
   );
 };

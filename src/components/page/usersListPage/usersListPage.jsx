@@ -5,13 +5,13 @@ import SearchStatus from "../../ui/searchStatus";
 import GroupList from "../../common/groupList";
 import _ from "lodash";
 import UsersTable from "../../ui/usersTable";
-import { useUsers } from "../../../hooks/useUsers";
 import { useAuth } from "../../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import {
   getProfessions,
   getProfessionsLoadingStatus
 } from "../../../store/professions";
+import { getUsers } from "../../../store/users";
 
 function UsersListPage() {
   const pageSize = 4;
@@ -24,7 +24,7 @@ function UsersListPage() {
     order: "asc"
   });
 
-  const { users } = useUsers();
+  const users = useSelector(getUsers());
   const { currentUser } = useAuth();
   const [searchedUsers, setSearchedUsers] = useState();
   const [inputValue, setInputValue] = useState("");

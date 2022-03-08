@@ -19,7 +19,9 @@ const Main = () => {
         <li>Progress: {progress}</li>
         {error && <li>Error: {error}</li>}
       </ul>
-      <h5>Use Sec1@sec.eu for login (email/password)</h5>
+      <h5>
+        Use <u>Sec1@sec.eu</u> for login (email/password)
+      </h5>
     </div>
   );
 };

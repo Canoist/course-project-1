@@ -57,7 +57,6 @@ const UserEditPage = () => {
         ...currentUser,
         qualities: transformData(currentUser.qualities)
       });
-      console.log(professions);
     }
   }, [isLoadProf, isLoadQual, currentUser, data]);
   const validate = () => {

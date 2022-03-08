@@ -20,8 +20,8 @@ const NavProfile = () => {
           src={currentUser.image}
           alt="Photo user's"
           className="img-responsive rounded-circle"
-          height="65px"
-          width="65px"
+          height="45px"
+          width="45px"
         />
       </div>
       <div className={"w-100 dropdown-menu" + (isOpen ? " show" : "")}>
