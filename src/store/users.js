@@ -57,6 +57,14 @@ const usersSlice = createSlice({
       state.isLoggedIn = false;
       state.auth = null;
       state.dataLoaded = false;
+    },
+    userUpdated: (state, action) => {
+      state.entities = state.entities.map((u) => {
+        if (u._id === action.payload._id) {
+          return action.payload;
+        }
+        return u;
+      });
     }
   }
 });
@@ -69,12 +77,15 @@ const {
   authRequestSuccess,
   authRequestFailed,
   userCreated,
-  userLoggedOut
+  userLoggedOut,
+  userUpdated
 } = actions;
 
 const authRequested = createAction("users/authRequested");
 const userCreateRequested = createAction("users/userCreateRequested");
 const createUserFailed = createAction("users/createUserFailed");
+const userUpdateRequested = createAction("users/userUpdateRequested");
+const userUpdateFailed = createAction("users/userUpdateFailed");
 
 export const signUp =
   ({ email, password, ...rest }) =>
@@ -102,16 +113,26 @@ export const signUp =
       dispatch(authRequestFailed(error.message));
     }
   };
+/*
+  async function getUserData() {
+    try {
+      const { content } = await userService.getCurrentUser();
+      setCurrentUser(content);
+    } catch (error) {
+      errorCatcher(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+  */
 
 export const logIn =
   ({ payload, redirect }) =>
   async (dispatch) => {
     const { email, password } = payload;
     dispatch(authRequested());
-    console.log("for");
     try {
       const data = await authService.login({ email, password });
-      console.log(data);
       dispatch(authRequestSuccess({ userId: data.localId }));
       localStorageService.setTokens(data);
       history.push(redirect);
@@ -138,6 +159,7 @@ function createUser(payload) {
     }
   };
 }
+
 export const loadUsersList = () => async (dispatch, getState) => {
   dispatch(usersRequested());
   try {
@@ -145,6 +167,16 @@ export const loadUsersList = () => async (dispatch, getState) => {
     dispatch(usersRecieved(content));
   } catch (error) {
     dispatch(usersRequestFailed(error.message));
+  }
+};
+
+export const updateUser = (payload) => async (dispatch) => {
+  dispatch(userUpdateRequested());
+  try {
+    const { content } = await userService.patch(payload);
+    dispatch(userUpdated(content));
+  } catch (error) {
+    dispatch(userUpdateFailed(error.message));
   }
 };
 

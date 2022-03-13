@@ -16,15 +16,17 @@ http.interceptors.request.use(
         (containSlash ? config.url.slice(0, -1) : config.url) + ".json";
       const expiresDate = localStorageService.getTokenExpiresDate();
       const refreshToken = localStorageService.getRefreshToken();
+
       if (refreshToken && expiresDate < Date.now()) {
         const data = await authService.refresh();
         localStorageService.setTokens({
           refreshToken: data.refresh_token,
           idToken: data.id_token,
           expiresIn: data.expires_in,
-          localId: data.local_id
+          localId: data.user_id
         });
       }
+
       const accessToken = localStorageService.getAccessToken();
       if (accessToken) {
         config.params = { ...config.params, auth: accessToken };

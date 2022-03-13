@@ -4,9 +4,8 @@ import TextField from "../../common/form/textFields";
 import SelectField from "../../common/form/selectField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import RadioField from "../../common/form/radioField";
-import { useAuth } from "../../../hooks/useAuth";
 import { useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getQualities,
   getQualitiesLoadingStatus
@@ -15,10 +14,10 @@ import {
   getProfessions,
   getProfessionsLoadingStatus
 } from "../../../store/professions";
-import { getCurrentUserData } from "../../../store/users";
+import { getCurrentUserData, updateUser } from "../../../store/users";
 
 const UserEditPage = () => {
-  const { updateUser } = useAuth();
+  const dispatch = useDispatch();
   const currentUser = useSelector(getCurrentUserData());
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState({});
@@ -90,26 +89,16 @@ const UserEditPage = () => {
     return result;
   };
 
-  const handleChangeQualities = ({ value }) => {
-    const newQualities = [];
-    for (const qualitie in qualitiesObject) {
-      for (const i in value) {
-        if (value[i].value === qualitiesObject[qualitie]._id) {
-          newQualities.push(qualitiesObject[qualitie]._id);
-        }
-      }
-    }
-    setData((prev) => ({ ...prev, qualities: newQualities }));
-  };
-// Редактировать тут
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return;
-    await updateUser({
-      ...data,
-      qualities: data.qualities.map((q) => q.value)
-    });
+    dispatch(
+      updateUser({
+        ...data,
+        qualities: data.qualities.map((q) => q.value)
+      })
+    );
     console.log(data);
     history.push(`/users/${currentUser._id}`);
   };
@@ -154,7 +143,7 @@ const UserEditPage = () => {
             <MultiSelectField
               defaultValue={data.qualities}
               options={qualitiesObject}
-              onChange={handleChangeQualities}
+              onChange={handleChange}
               name="qualities"
               label="Выберете ваши качества"
             />

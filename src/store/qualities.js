@@ -51,7 +51,7 @@ export const loadQualitiesList = () => async (dispatch, getState) => {
 
 export function getQualities() {
   return function (state) {
-    return state.qualities.entities;
+    return state.qualities.entities ? state.qualities.entities : [];
   };
 }
 export const getQualitiesLoadingStatus = () => (state) =>
