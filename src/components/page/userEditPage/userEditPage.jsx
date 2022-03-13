@@ -12,13 +12,14 @@ import {
   getQualitiesLoadingStatus
 } from "../../../store/qualities";
 import {
-  // getProfessionById,
   getProfessions,
   getProfessionsLoadingStatus
 } from "../../../store/professions";
+import { getCurrentUserData } from "../../../store/users";
 
 const UserEditPage = () => {
-  const { currentUser, updateUser } = useAuth();
+  const { updateUser } = useAuth();
+  const currentUser = useSelector(getCurrentUserData());
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState({});
   const [errors, setErrors] = useState({});
@@ -100,7 +101,7 @@ const UserEditPage = () => {
     }
     setData((prev) => ({ ...prev, qualities: newQualities }));
   };
-
+// Редактировать тут
   const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = validate();
