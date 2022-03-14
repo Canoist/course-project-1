@@ -4,33 +4,28 @@ import TextField from "../../common/form/textFields";
 import SelectField from "../../common/form/selectField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import RadioField from "../../common/form/radioField";
-import { useAuth } from "../../../hooks/useAuth";
-import { useProfessions } from "../../../hooks/useProfession";
-import { useQualities } from "../../../hooks/useQualities";
-import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getQualities,
+  getQualitiesLoadingStatus
+} from "../../../store/qualities";
+import {
+  getProfessions,
+  getProfessionsLoadingStatus
+} from "../../../store/professions";
+import { getCurrentUserData, updateUser } from "../../../store/users";
 
 const UserEditPage = () => {
-  const { currentUser, updateUser } = useAuth();
+  const dispatch = useDispatch();
+  const currentUser = useSelector(getCurrentUserData());
+  const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState({});
   const [errors, setErrors] = useState({});
-  const {
-    professions,
-    getProfession,
-    isLoading: isLoadProf
-  } = useProfessions();
-  const { qualities, isLoading: isLoadQual, getQualities } = useQualities();
+  const professions = useSelector(getProfessions());
+  const isLoadProf = useSelector(getProfessionsLoadingStatus());
+  const qualities = useSelector(getQualities());
+  const isLoadQual = useSelector(getQualitiesLoadingStatus());
   const qualitiesObject = { ...qualities };
-  const history = useHistory();
-
-  useEffect(() => {
-    setData({
-      name: currentUser.name,
-      email: currentUser.email,
-      profession: currentUser.profession,
-      sex: currentUser.sex,
-      qualities: currentUser.qualities
-    });
-  }, [currentUser]);
 
   const validatorConfig = {
     name: {
@@ -44,8 +39,24 @@ const UserEditPage = () => {
 
   useEffect(() => {
     validate();
+    if (data && isLoading) {
+      setIsLoading(false);
+    }
   }, [data]);
 
+  useEffect(() => {
+    if (
+      !isLoadProf &&
+      !isLoadQual &&
+      currentUser &&
+      Object.keys(data).length === 0
+    ) {
+      setData({
+        ...currentUser,
+        qualities: transformData(currentUser.qualities)
+      });
+    }
+  }, [isLoadProf, isLoadQual, currentUser, data]);
   const validate = () => {
     const errors = validator(data, validatorConfig);
     setErrors(errors);
@@ -56,24 +67,36 @@ const UserEditPage = () => {
     setData((prev) => ({ ...prev, [target.name]: target.value }));
   };
 
-  const handleChangeQualities = ({ value }) => {
-    const newQualities = [];
-    for (const qualitie in qualitiesObject) {
-      for (const i in value) {
-        if (value[i].value === qualitiesObject[qualitie]._id) {
-          newQualities.push(qualitiesObject[qualitie]._id);
+  function getQualitiesListByIds(qualitiesIds) {
+    const qualitiesArray = [];
+    for (const qualId of qualitiesIds) {
+      for (const quality of qualities) {
+        if (quality._id === qualId) {
+          qualitiesArray.push(quality);
+          break;
         }
       }
     }
-    setData((prev) => ({ ...prev, qualities: newQualities }));
+    return qualitiesArray;
+  }
+  const transformData = (data) => {
+    const result = getQualitiesListByIds(data).map((qual) => ({
+      label: qual.name,
+      value: qual._id
+    }));
+    return result;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return;
-    updateUser(data);
-    history.push(`/users/${currentUser._id}`);
+    dispatch(
+      updateUser({
+        ...data,
+        qualities: data.qualities.map((q) => q.value)
+      })
+    );
   };
 
   const professionsList = Object.keys(professions).map((prof) => ({
@@ -81,8 +104,7 @@ const UserEditPage = () => {
     value: professions[prof]._id
   }));
 
-  const isLoad =
-    currentUser && !isLoadProf && !isLoadQual && getProfession(data.profession);
+  const isLoad = currentUser && !isLoadProf && !isLoadQual && !isLoading;
 
   return isLoad ? (
     <div className="container mt-5">
@@ -90,7 +112,6 @@ const UserEditPage = () => {
         <div className="col-md-6 offset-md-3 shadow p-4">
           <h3 className="mb-4">Редактирование пользователя</h3>
           <form onSubmit={handleSubmit}>
-            {" "}
             <TextField
               name="name"
               value={data.name}
@@ -112,16 +133,13 @@ const UserEditPage = () => {
               error={errors.profession}
               options={professionsList}
               label="Выберете вашу профессию"
-              defaultOption={getProfession(data.profession).name}
-              value={getProfession(data.profession)._id}
+              defaultOption="Choose..."
+              value={data.profession}
             />
             <MultiSelectField
-              defaultValue={data.qualities.map((qualId) => ({
-                label: getQualities(qualId).name,
-                value: getQualities(qualId)._id
-              }))}
+              defaultValue={data.qualities}
               options={qualitiesObject}
-              onChange={handleChangeQualities}
+              onChange={handleChange}
               name="qualities"
               label="Выберете ваши качества"
             />

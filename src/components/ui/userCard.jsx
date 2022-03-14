@@ -1,16 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useAuth } from "../../hooks/useAuth";
-import { useProfessions } from "../../hooks/useProfession";
+import { getProfessionById } from "../../store/professions";
+import { useSelector } from "react-redux";
+import { getCurrentUserId } from "../../store/users";
 
 const UserCard = ({ user, onClick }) => {
-  const { currentUser } = useAuth();
-  const { getProfession } = useProfessions();
+  const currentUserId = useSelector(getCurrentUserId());
 
   return (
     <div className="card mb-3">
       <div className="card-body">
-        {currentUser._id === user._id && (
+        {currentUserId === user._id && (
           <button
             className="position-absolute top-0 end-0 btn btn-light btn-sm"
             onClick={onClick}
@@ -29,7 +29,7 @@ const UserCard = ({ user, onClick }) => {
           <div className="mt-3">
             <h4>{user.name}</h4>
             <p className="text-secondary mb-1">
-              {getProfession(user.profession).name}
+              {useSelector(getProfessionById(user.profession)).name}
             </p>
             <div className="text-muted">
               <i

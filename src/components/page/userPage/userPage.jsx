@@ -5,19 +5,17 @@ import UserCard from "../../ui/userCard";
 import QualitiesCard from "../../ui/qualities/qualitiesCard";
 import MeetingsCard from "../../ui/mettingsCard";
 import Comments from "../../ui/comments";
-import { useUsers } from "../../../hooks/useUsers";
-import { useProfessions } from "../../../hooks/useProfession";
-import { CommentsProvider } from "../../../hooks/useComments";
-import { useAuth } from "../../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import { getProfessionsLoadingStatus } from "../../../store/professions";
+import { getCurrentUserId, getUserById } from "../../../store/users";
 
 const UserPage = ({ userId }) => {
-  const { getUser } = useUsers();
-  const { isLoading } = useProfessions();
-  const user = getUser(userId);
-  const { currentUser } = useAuth();
+  const isLoading = useSelector(getProfessionsLoadingStatus());
+  const user = useSelector(getUserById(userId));
+  const currentUserId = useSelector(getCurrentUserId());
   const history = useHistory();
   const handleGoToEditUser = () => {
-    history.push(`/users/${currentUser._id}/edit`);
+    history.push(`/users/${currentUserId}/edit`);
   };
 
   return !isLoading ? (
@@ -29,9 +27,7 @@ const UserPage = ({ userId }) => {
           <MeetingsCard meets={user.completedMeetings} />
         </div>
         <div className="col-md-8">
-          <CommentsProvider>
-            <Comments />
-          </CommentsProvider>
+          <Comments />
         </div>
       </div>
     </div>

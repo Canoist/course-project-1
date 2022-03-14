@@ -1,13 +1,15 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import { getCurrentUserData } from "../../store/users";
 
 const NavProfile = () => {
-  const { currentUser } = useAuth();
+  const currentUser = useSelector(getCurrentUserData());
   const [isOpen, setOpen] = useState(false);
   const toggleMenu = () => {
     setOpen((prev) => !prev);
   };
+  if (!currentUser) return "Loading...";
 
   return (
     <div className="dropdown mx-5">
@@ -20,6 +22,8 @@ const NavProfile = () => {
           src={currentUser.image}
           alt="Photo user's"
           className="img-responsive rounded-circle"
+          height="45px"
+          width="45px"
         />
       </div>
       <div className={"w-100 dropdown-menu" + (isOpen ? " show" : "")}>

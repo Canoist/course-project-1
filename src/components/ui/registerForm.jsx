@@ -5,14 +5,16 @@ import SelectField from "../common/form/selectField";
 import RadioField from "../common/form/radioField";
 import MultiSelectField from "../common/form/multiSelectField";
 import CheckBoxForm from "../common/form/checkBoxField";
-import { useQualities } from "../../hooks/useQualities";
-import { useProfessions } from "../../hooks/useProfession";
-import { useAuth } from "../../hooks/useAuth";
-import { useHistory } from "react-router-dom";
+import { getQualities, getQualitiesLoadingStatus } from "../../store/qualities";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getProfessions,
+  getProfessionsLoadingStatus
+} from "../../store/professions";
+import { signUp } from "../../store/users";
 
 const RegisterForm = () => {
-  const history = useHistory();
-
+  const dispatch = useDispatch();
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -22,10 +24,14 @@ const RegisterForm = () => {
     qualities: [],
     license: false
   });
+  console.log("Thied3@thd.eu");
+
   const [errors, setErrors] = useState({});
-  const { professions, isLoading: isLoadProf } = useProfessions();
-  const { qualities, isLoading: isLoadQual } = useQualities();
-  const { signUp } = useAuth();
+  const professions = useSelector(getProfessions());
+  const isLoadProf = useSelector(getProfessionsLoadingStatus());
+
+  const qualities = useSelector(getQualities());
+  const isLoadQual = useSelector(getQualitiesLoadingStatus());
 
   const qualitiesObject = { ...qualities };
 
@@ -77,7 +83,7 @@ const RegisterForm = () => {
     setData((prev) => ({ ...prev, [target.name]: target.value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return;
@@ -85,12 +91,7 @@ const RegisterForm = () => {
       ...data,
       qualities: data.qualities.map((q) => q.value)
     };
-    try {
-      await signUp(newData);
-      history.push("/");
-    } catch (error) {
-      setErrors(error);
-    }
+    dispatch(signUp(newData));
   };
 
   const professionsList = Object.keys(professions).map((prof) => ({

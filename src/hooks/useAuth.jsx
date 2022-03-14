@@ -23,7 +23,6 @@ const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [currentUser, setCurrentUser] = useState();
   const [isLoading, setIsLoading] = useState(true);
-
   const history = useHistory();
 
   function randomInt(min, max) {

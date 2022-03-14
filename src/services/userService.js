@@ -8,10 +8,10 @@ const userService = {
     const { data } = await httpService.get(userEndPoint);
     return data;
   },
-  create: async (payLoad) => {
+  create: async (payload) => {
     const { data } = await httpService.put(
       userEndPoint + localStorageService.getUserId(),
-      payLoad
+      payload
     );
     return data;
   },
@@ -21,10 +21,10 @@ const userService = {
     );
     return data;
   },
-  patch: async (payLoad) => {
+  patch: async (payload) => {
     const { data } = await httpService.patch(
       userEndPoint + localStorageService.getUserId(),
-      payLoad
+      payload
     );
     return data;
   }
