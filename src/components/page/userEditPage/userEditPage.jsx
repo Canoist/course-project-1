@@ -4,7 +4,6 @@ import TextField from "../../common/form/textFields";
 import SelectField from "../../common/form/selectField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import RadioField from "../../common/form/radioField";
-import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getQualities,
@@ -27,7 +26,6 @@ const UserEditPage = () => {
   const qualities = useSelector(getQualities());
   const isLoadQual = useSelector(getQualitiesLoadingStatus());
   const qualitiesObject = { ...qualities };
-  const history = useHistory();
 
   const validatorConfig = {
     name: {
@@ -99,8 +97,6 @@ const UserEditPage = () => {
         qualities: data.qualities.map((q) => q.value)
       })
     );
-    console.log(data);
-    history.push(`/users/${currentUser._id}`);
   };
 
   const professionsList = Object.keys(professions).map((prof) => ({
